@@ -1,0 +1,216 @@
+/* css/store.css — Cart, Orders, Admin Dashboard styles */
+
+/* ── Empty State ─────────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 20px rgba(255,255,255,.2));
+}
+
+/* ── Cart Items ──────────────────────────────────────────────────────────── */
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: border-color .2s;
+}
+.cart-item:hover { border-color: rgba(108,60,225,.35); }
+
+.cart-item-img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-title { color: #fff; font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-price { color: rgba(255,255,255,.5); font-size: .85rem; margin-top: 3px; }
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+.qty-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background .2s;
+}
+.qty-btn:hover { background: rgba(255,255,255,.15); }
+.qty-val { color: #fff; font-weight: 700; min-width: 20px; text-align: center; }
+
+.cart-item-subtotal { color: #fff; font-weight: 700; min-width: 64px; text-align: right; font-size: 1rem; }
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: rgba(255,107,107,.7);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all .2s;
+}
+.btn-remove:hover { color: #ff6b6b; background: rgba(255,107,107,.12); }
+
+/* ── Cart Summary ────────────────────────────────────────────────────────── */
+.cart-summary {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 420px;
+  margin-left: auto;
+}
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+.cart-total-row {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 8px;
+  padding-top: 16px;
+}
+
+/* ── Orders Table ────────────────────────────────────────────────────────── */
+.orders-table-wrap {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.orders-table thead { background: rgba(255,255,255,0.06); }
+.orders-table th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: rgba(255,255,255,.5);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.orders-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: middle;
+}
+.orders-table tr:last-child td { border-bottom: none; }
+.orders-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* Order status pills */
+.order-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.status-pending    { background: rgba(255,193,7,.15);  color: #ffc107; border: 1px solid rgba(255,193,7,.3);  }
+.status-processing { background: rgba(0,212,255,.15);  color: #00d4ff; border: 1px solid rgba(0,212,255,.3);  }
+.status-completed  { background: rgba(40,168,101,.15); color: #28a865; border: 1px solid rgba(40,168,101,.3); }
+.status-cancelled  { background: rgba(231,76,60,.15);  color: #e74c3c; border: 1px solid rgba(231,76,60,.3);  }
+
+/* ── Order Detail Modal ──────────────────────────────────────────────────── */
+.order-items-list { display: flex; flex-direction: column; gap: 12px; }
+.order-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 12px;
+}
+.order-item-img {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.order-item-info { flex: 1; min-width: 0; }
+
+/* ── Admin Stat Cards ────────────────────────────────────────────────────── */
+.stat-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: border-color .2s, transform .2s;
+}
+.stat-card:hover { border-color: rgba(108,60,225,.4); transform: translateY(-3px); }
+.stat-icon { font-size: 2rem; margin-bottom: 10px; }
+.stat-val  { font-family: 'Rajdhani', sans-serif; font-size: 2.2rem; font-weight: 700; color: #fff; line-height: 1; }
+.stat-label { font-size: .8rem; color: rgba(255,255,255,.5); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+/* ── Admin Tabs ──────────────────────────────────────────────────────────── */
+.gc-tabs {
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+.gc-tabs .nav-link {
+  color: rgba(255,255,255,.5) !important;
+  border: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  font-size: .9rem !important;
+  transition: all .2s !important;
+  background: transparent !important;
+}
+.gc-tabs .nav-link:hover { color: rgba(255,255,255,.8) !important; background: rgba(255,255,255,.05) !important; }
+.gc-tabs .nav-link.active { color: #fff !important; background: rgba(108,60,225,.2) !important; border-bottom: 2px solid #6c3ce1 !important; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cart-item { flex-wrap: wrap; }
+  .cart-item-controls { width: 100%; justify-content: space-between; }
+  .gc-navbar { padding: 12px 16px; }
+  .gc-nav-actions { gap: 4px; }
+  .gc-nav-link { padding: 5px 10px; font-size: .8rem; }
+}

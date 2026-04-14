@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+</head>
+<body class="auth-page">
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-logo">🎮</div>
+        <h1>Game Center</h1>
+        <p>Create your account</p>
+      </div>
+
+      <div id="authAlert"></div>
+
+      <form method="POST" action="../scripts/register.php" class="auth-form">
+        <div class="form-group-auth">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="coolplayer99" required minlength="3" maxlength="50">
+        </div>
+        <div class="form-group-auth">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group-auth">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Min. 6 characters" required minlength="6">
+        </div>
+        <div class="form-group-auth">
+          <label>Confirm Password</label>
+          <input type="password" name="confirm" placeholder="Repeat your password" required>
+        </div>
+        <button type="submit" class="btn-auth-primary">Create Account</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const alertDiv = document.getElementById('authAlert');
+    if (params.get('error')) {
+      alertDiv.innerHTML = `<div class="alert-auth alert-auth-danger">${decodeURIComponent(params.get('error'))}</div>`;
+    }
+  </script>
+</body>
+</html>

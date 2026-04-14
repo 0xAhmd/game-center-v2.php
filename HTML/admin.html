@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+</head>
+<body>
+
+  <nav class="gc-navbar">
+    <div class="gc-nav-brand">
+      <a href="index.html" style="text-decoration:none;color:inherit">
+        <img src="../assets/logo.png" alt="Logo" width="40" onerror="this.style.display='none'">
+        <span>Game Center</span>
+      </a>
+    </div>
+    <div class="gc-nav-actions" id="navActions"></div>
+  </nav>
+
+  <div class="container py-5">
+    <h2 class="text-white fw-bold mb-4">⚙️ Admin Dashboard</h2>
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-5" id="statCards">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon">🎮</div>
+          <div class="stat-val" id="statGames">—</div>
+          <div class="stat-label">Total Games</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon">👤</div>
+          <div class="stat-val" id="statUsers">—</div>
+          <div class="stat-label">Registered Users</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-val" id="statOrders">—</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-val" id="statRevenue">—</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs gc-tabs mb-4" id="adminTabs">
+      <li class="nav-item">
+        <button class="nav-link active" onclick="showTab('orders')">📦 Orders</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" onclick="showTab('users')">👥 Users</button>
+      </li>
+    </ul>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-white mb-0">All Orders</h5>
+        <a href="orders.html" class="btn btn-sm btn-outline-light">Full View</a>
+      </div>
+      <div id="adminOrdersContainer">
+        <div class="text-center text-white py-4"><div class="spinner-border text-light"></div></div>
+      </div>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="tab-users" style="display:none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="text-white mb-0">All Users</h5>
+      </div>
+      <div id="adminUsersContainer">
+        <div class="text-center text-white py-4"><div class="spinner-border text-light"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="modal fade" id="orderDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-dark text-white rounded-4 p-4">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold">Order Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="orderDetailBody"></div>
+        <div class="modal-footer border-0">
+          <label class="text-white me-2">Update Status:</label>
+          <select id="statusSelect" class="form-select form-select-sm w-auto me-2">
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn btn-sm btn-success" onclick="updateOrderStatus()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/auth_ui.js"></script>
+  <script src="../JS/admin.js"></script>
+</body>
+</html>

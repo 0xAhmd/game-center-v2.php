@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Center Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+  <nav class="gc-navbar">
+    <div class="gc-nav-brand">
+      <img src="../assets/logo.png" alt="Logo" width="40" onerror="this.style.display='none'">
+      <span>Game Center</span>
+    </div>
+    <div class="gc-nav-actions" id="navActions">
+      <!-- injected by JS -->
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <div class="gc-hero">
+    <h1 class="store-title">🎮 Game Center</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search for a game..." class="form-control shadow" id="searchInput">
+    </div>
+  </div>
+
+  <!-- ── Game Grid ────────────────────────────────────────────────────────── -->
+  <div class="container pb-5">
+    <div class="row g-4" id="game-cards-container">
+      <div class="col-12 text-center text-white py-5">
+        <div class="spinner-border text-light" role="status"></div>
+        <p class="mt-2">Loading games...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Floating Add Button (admin only) ─────────────────────────────────── -->
+  <button class="floating-btn" id="addGameBtn" onclick="location.href='../HTML/add.html'" style="display:none">
+    + Add Game
+  </button>
+
+  <!-- ── Edit/View Modal ──────────────────────────────────────────────────── -->
+  <div class="modal fade" id="editGameModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content p-4 bg-dark text-white rounded-4 shadow-lg">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold" id="editGameModalLabel">Game Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Admin edit form -->
+          <form id="editGameForm" class="row g-3" id="adminEditSection" style="display:none">
+            <div class="col-md-6">
+              <label class="form-label">Game Title</label>
+              <input type="text" id="editGameTitle" class="form-control form-control-lg">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Genre</label>
+              <input type="text" id="editGameGenre" class="form-control form-control-lg">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Price ($)</label>
+              <input type="number" id="editGamePrice" step="0.01" class="form-control form-control-lg">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Image URL</label>
+              <input type="text" id="editGameImageUrl" class="form-control form-control-lg">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea id="editGameDescription" class="form-control form-control-lg" rows="4"></textarea>
+            </div>
+          </form>
+
+          <!-- User view (read-only) -->
+          <div id="userViewSection" style="display:none">
+            <div class="row g-3">
+              <div class="col-md-5">
+                <img id="viewGameImage" src="" class="img-fluid rounded-3" alt="">
+              </div>
+              <div class="col-md-7">
+                <h4 id="viewGameTitle" class="text-white fw-bold"></h4>
+                <span id="viewGameGenre" class="genre-tag mb-3 d-inline-block"></span>
+                <p id="viewGameDesc" class="text-white-50 mt-2" style="font-size:.9rem"></p>
+                <div class="mt-3">
+                  <span id="viewGamePrice" class="price-badge fs-5"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 d-flex justify-content-between">
+          <!-- Admin buttons -->
+          <div id="adminModalBtns" style="display:none">
+            <button type="button" class="btn btn-success px-4 me-2" onclick="saveEdit()">Save</button>
+            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Cancel</button>
+          </div>
+          <!-- User buttons -->
+          <div id="userModalBtns" style="display:none">
+            <button type="button" class="btn btn-outline-light px-4" data-bs-dismiss="modal">Close</button>
+          </div>
+          <!-- Add to cart / delete -->
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary px-4" id="addToCartBtn" onclick="addToCartFromModal()" style="display:none">
+              🛒 Add to Cart
+            </button>
+            <button type="button" class="btn btn-danger px-4" id="deleteGameBtn" onclick="deleteGame()" style="display:none">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/fetch_games.js"></script>
+  <script src="../JS/scripts.js"></script>
+  <script src="../JS/auth_ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+</head>
+<body class="auth-page">
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-logo">🎮</div>
+        <h1>Game Center</h1>
+        <p>Sign in to your account</p>
+      </div>
+
+      <!-- Alert area -->
+      <div id="authAlert"></div>
+
+      <form method="POST" action="../scripts/login.php" class="auth-form">
+        <div class="form-group-auth">
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group-auth">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div class="form-check-auth">
+          <label>
+            <input type="checkbox" name="remember"> Remember me for 30 days
+          </label>
+        </div>
+        <button type="submit" class="btn-auth-primary">Sign In</button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="register.html">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Show error/success from query params
+    const params = new URLSearchParams(window.location.search);
+    const alertDiv = document.getElementById('authAlert');
+    if (params.get('error')) {
+      alertDiv.innerHTML = `<div class="alert-auth alert-auth-danger">${decodeURIComponent(params.get('error'))}</div>`;
+    }
+    if (params.get('success')) {
+      alertDiv.innerHTML = `<div class="alert-auth alert-auth-success">${decodeURIComponent(params.get('success'))}</div>`;
+    }
+  </script>
+</body>
+</html>
