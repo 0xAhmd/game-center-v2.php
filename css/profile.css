@@ -1,0 +1,217 @@
+/* css/profile.css — User Profile page styles */
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Sidebar / Avatar Card ───────────────────────────────────────────────── */
+.profile-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+}
+
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 auto 14px;
+  font-family: 'Rajdhani', sans-serif;
+  box-shadow: 0 0 30px rgba(108,60,225,0.4);
+  letter-spacing: 1px;
+}
+
+.profile-role-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: .75rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  background: rgba(108,60,225,.2);
+  border: 1px solid rgba(108,60,225,.4);
+  color: #c4a8ff;
+  letter-spacing: .3px;
+}
+
+.profile-role-badge.user-badge {
+  background: rgba(0,212,255,.12);
+  border-color: rgba(0,212,255,.3);
+  color: #7ee8ff;
+}
+
+.profile-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: .3px;
+}
+
+.profile-email {
+  font-size: .85rem;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+
+.profile-joined {
+  font-size: .75rem;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 20px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Stats Mini Card ─────────────────────────────────────────────────────── */
+.stats-mini-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.stats-mini-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+}
+
+.stats-mini-label {
+  font-size: .82rem;
+  color: rgba(255,255,255,.5);
+}
+
+.stats-mini-val {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ── Main Content Sections ───────────────────────────────────────────────── */
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-section {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
+  padding: 28px;
+  backdrop-filter: blur(10px);
+}
+
+.profile-section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.9);
+  letter-spacing: .3px;
+  margin-bottom: 18px;
+}
+
+/* ── Alerts ──────────────────────────────────────────────────────────────── */
+.alert-profile {
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: .875rem;
+  margin-bottom: 14px;
+}
+
+.alert-profile-success {
+  background: rgba(40,168,101,.18);
+  border: 1px solid rgba(40,168,101,.35);
+  color: #7effc2;
+}
+
+.alert-profile-danger {
+  background: rgba(231,76,60,.18);
+  border: 1px solid rgba(231,76,60,.35);
+  color: #ff9d9d;
+}
+
+/* ── Recent Orders ───────────────────────────────────────────────────────── */
+.recent-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recent-order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  transition: border-color .2s;
+}
+
+.recent-order-row:hover {
+  border-color: rgba(108,60,225,.3);
+}
+
+/* ── Quick Action Cards (admin) ──────────────────────────────────────────── */
+.quick-action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 24px 16px;
+  text-decoration: none;
+  transition: all .25s;
+  cursor: pointer;
+}
+
+.quick-action-card:hover {
+  background: rgba(108,60,225,.15);
+  border-color: rgba(108,60,225,.4);
+  transform: translateY(-3px);
+}
+
+.qa-icon {
+  font-size: 2rem;
+}
+
+.qa-label {
+  color: rgba(255,255,255,.8);
+  font-size: .875rem;
+  font-weight: 600;
+}

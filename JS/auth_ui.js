@@ -14,19 +14,6 @@
     // expose globally
     window.__session = s;
 
-    let cartBadge = '';
-    if (s.logged_in && s.role !== 'admin') {
-      // fetch cart count asynchronously
-      fetch('../scripts/cart.php?action=count')
-        .then(r => r.json())
-        .then(d => {
-          const count = parseInt(d.total) || 0;
-          const badge = document.getElementById('cartCountBadge');
-          if (badge) badge.textContent = count > 0 ? count : '';
-        })
-        .catch(() => {});
-    }
-
     if (!s.logged_in) {
       nav.innerHTML = `
         <a href="../HTML/login.html" class="gc-nav-link">Sign In</a>
@@ -37,7 +24,7 @@
         <a href="../HTML/index.html" class="gc-nav-link">Store</a>
         <a href="../HTML/admin.html" class="gc-nav-link">Dashboard</a>
         <a href="../HTML/orders.html" class="gc-nav-link">Orders</a>
-        <span class="gc-nav-user">👤 ${escHtml(s.username)}</span>
+        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile">👤 ${escHtml(s.username)}</a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
       // Show floating add button if present
@@ -50,7 +37,7 @@
           🛒 Cart <span id="cartCountBadge" class="cart-badge"></span>
         </a>
         <a href="../HTML/orders.html" class="gc-nav-link">My Orders</a>
-        <span class="gc-nav-user">👤 ${escHtml(s.username)}</span>
+        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile">👤 ${escHtml(s.username)}</a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
       // Trigger cart count fetch
