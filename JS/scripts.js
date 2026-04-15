@@ -20,11 +20,21 @@ function onSessionReady(session) {
   window.__session = session;
 }
 
-// ── Open modal (shared by card click) ────────────────────────────────────
+// ── Open modal or navigate to game page ───────────────────────────────────
 function openGameModal(title, id) {
+  const session = window.__session || {};
+  const isAdmin = session.role === 'admin';
+
+  // Non-admin users go to the dedicated game details page
+  if (!isAdmin) {
+    window.location.href = `../HTML/game.html?id=${id}`;
+    return;
+  }
+
+  // ── Admin: show editable modal (unchanged) ────────────────────────────
   currentEditingGameId = id;
 
-  // Fetch fresh game data from already-loaded cards
+  // Fetch game data from already-loaded cards
   const cards = document.querySelectorAll('#game-cards-container .game-card');
   cards.forEach(card => {
     if (card.querySelector('.card-title')?.textContent === title) {
@@ -39,42 +49,19 @@ function openGameModal(title, id) {
     }
   });
 
-  const session = window.__session || {};
-  const isAdmin = session.role === 'admin';
-  const isUser  = session.logged_in && !isAdmin;
+  document.getElementById('editGameForm').style.display    = '';
+  document.getElementById('userViewSection').style.display = 'none';
+  document.getElementById('adminModalBtns').style.display  = '';
+  document.getElementById('userModalBtns').style.display   = 'none';
+  document.getElementById('addToCartBtn').style.display    = 'none';
+  document.getElementById('deleteGameBtn').style.display   = '';
 
-  // ── Admin: show editable form ─────────────────────────────────────────
-  if (isAdmin) {
-    document.getElementById('editGameForm').style.display    = '';
-    document.getElementById('userViewSection').style.display = 'none';
-    document.getElementById('adminModalBtns').style.display  = '';
-    document.getElementById('userModalBtns').style.display   = 'none';
-    document.getElementById('addToCartBtn').style.display    = 'none';
-    document.getElementById('deleteGameBtn').style.display   = '';
-
-    document.getElementById('editGameTitle').value       = currentGameData.title;
-    document.getElementById('editGameGenre').value       = currentGameData.genre;
-    document.getElementById('editGameDescription').value = currentGameData.description;
-    document.getElementById('editGamePrice').value       = currentGameData.price;
-    document.getElementById('editGameImageUrl').value    = currentGameData.image_url;
-    document.getElementById('editGameModalLabel').textContent = 'Edit Game Details';
-  } else {
-    // ── User / guest: read-only view ────────────────────────────────────
-    document.getElementById('editGameForm').style.display    = 'none';
-    document.getElementById('userViewSection').style.display = '';
-    document.getElementById('adminModalBtns').style.display  = 'none';
-    document.getElementById('userModalBtns').style.display   = '';
-    document.getElementById('deleteGameBtn').style.display   = 'none';
-    document.getElementById('addToCartBtn').style.display    = isUser ? '' : 'none';
-
-    document.getElementById('viewGameTitle').textContent  = currentGameData.title;
-    document.getElementById('viewGameGenre').textContent  = currentGameData.genre;
-    document.getElementById('viewGameDesc').textContent   = currentGameData.description;
-    const price = parseFloat(currentGameData.price);
-    document.getElementById('viewGamePrice').textContent  = price === 0 ? 'Free' : `$${price.toFixed(2)}`;
-    document.getElementById('viewGameImage').src          = currentGameData.image_url;
-    document.getElementById('editGameModalLabel').textContent = currentGameData.title;
-  }
+  document.getElementById('editGameTitle').value       = currentGameData.title;
+  document.getElementById('editGameGenre').value       = currentGameData.genre;
+  document.getElementById('editGameDescription').value = currentGameData.description;
+  document.getElementById('editGamePrice').value       = currentGameData.price;
+  document.getElementById('editGameImageUrl').value    = currentGameData.image_url;
+  document.getElementById('editGameModalLabel').textContent = 'Edit Game Details';
 
   new bootstrap.Modal(document.getElementById('editGameModal')).show();
 }
@@ -120,7 +107,7 @@ function deleteGame() {
     .catch(err => console.error('Delete error:', err));
 }
 
-// ── Add to cart (user) ────────────────────────────────────────────────────
+// ── Add to cart (user) — kept for any legacy usage ────────────────────────
 function addToCartFromModal() {
   if (!currentEditingGameId) return;
   const formData = new FormData();
@@ -134,7 +121,6 @@ function addToCartFromModal() {
       if (d.success) {
         bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
         showToast('Added to cart! 🛒', 'success');
-        // Refresh badge
         fetch('../scripts/cart.php?action=count')
           .then(r => r.json())
           .then(d => {

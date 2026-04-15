@@ -17,7 +17,7 @@ $action  = $_GET['action'] ?? $_POST['action'] ?? '';
 
 // ── GET: profile info + stats ──────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'get') {
-    $stmt = $pdo->prepare("SELECT id, username, email, role, created_at FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, username, email, role, avatar_path, created_at FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
     if (!$user) { http_response_code(404); echo json_encode(['error' => 'User not found']); exit; }

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game Details — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+  <style>
+    .game-detail-hero {
+      position: relative;
+      width: 100%;
+      min-height: 340px;
+      overflow: hidden;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .game-detail-hero img {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      display: block;
+      border-radius: 20px;
+    }
+    .game-detail-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,10,25,0.92) 0%, rgba(10,10,25,0.3) 60%, transparent 100%);
+      border-radius: 20px;
+    }
+    .game-detail-hero-content {
+      position: absolute;
+      bottom: 28px;
+      left: 28px;
+      right: 28px;
+    }
+    .game-detail-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.6);
+      line-height: 1.1;
+    }
+    .game-detail-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .game-detail-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .game-detail-desc {
+      color: rgba(255,255,255,.75);
+      font-size: .97rem;
+      line-height: 1.75;
+      margin: 0;
+    }
+    .game-buy-card {
+      background: rgba(108,60,225,0.1);
+      border: 1px solid rgba(108,60,225,0.3);
+      border-radius: 18px;
+      padding: 28px;
+      position: sticky;
+      top: 80px;
+    }
+    .game-buy-price {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .game-buy-price.free {
+      background: linear-gradient(135deg, #00d4ff, #6c3ce1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .game-buy-label {
+      color: rgba(255,255,255,.45);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 20px;
+    }
+    .btn-add-cart {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s;
+      letter-spacing: .3px;
+    }
+    .btn-add-cart:hover {
+      opacity: .9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108,60,225,.5);
+    }
+    .btn-add-cart:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-add-cart.added {
+      background: linear-gradient(135deg, #1a7a4a, #28a865);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,.55);
+      text-decoration: none;
+      font-size: .875rem;
+      margin-bottom: 24px;
+      transition: color .2s;
+    }
+    .back-link:hover { color: #fff; }
+    .login-prompt {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      font-size: .875rem;
+      color: rgba(255,255,255,.6);
+    }
+    .login-prompt a { color: #9b5de5; font-weight: 600; text-decoration: none; }
+    .login-prompt a:hover { text-decoration: underline; }
+    #gameDetailSkeleton .skeleton-line {
+      background: rgba(255,255,255,0.07);
+      border-radius: 8px;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity:.5 } 50% { opacity:1 }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="gc-navbar">
+    <div class="gc-nav-brand">
+      <a href="index.html" style="text-decoration:none;color:inherit">
+        <img src="../assets/logo.png" alt="Logo" width="40" onerror="this.style.display='none'">
+        <span>Game Center</span>
+      </a>
+    </div>
+    <div class="gc-nav-actions" id="navActions"></div>
+  </nav>
+
+  <div class="container py-4" id="gameDetailContainer">
+    <!-- Skeleton -->
+    <div id="gameDetailSkeleton">
+      <div class="skeleton-line mb-3" style="width:80px;height:18px"></div>
+      <div class="skeleton-line mb-4" style="width:100%;height:340px;border-radius:20px"></div>
+      <div class="row g-4">
+        <div class="col-md-8">
+          <div class="skeleton-line mb-3" style="width:60%;height:28px"></div>
+          <div class="skeleton-line mb-2" style="width:100%;height:14px"></div>
+          <div class="skeleton-line mb-2" style="width:95%;height:14px"></div>
+          <div class="skeleton-line" style="width:80%;height:14px"></div>
+        </div>
+        <div class="col-md-4">
+          <div class="skeleton-line" style="width:100%;height:200px;border-radius:18px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/auth_ui.js"></script>
+  <script>
+    const params   = new URLSearchParams(window.location.search);
+    const gameId   = parseInt(params.get('id'));
+    let   session  = null;
+
+    if (!gameId) {
+      window.location.href = 'index.html';
+    }
+
+    // Called by auth_ui.js once session is ready
+    function onSessionReady(s) {
+      session = s;
+      // Redirect admin to store (they use modal)
+      if (s.role === 'admin') {
+        window.location.href = 'index.html';
+        return;
+      }
+      loadGame();
+    }
+
+    function loadGame() {
+      fetch('../scripts/get_games.php')
+        .then(r => r.json())
+        .then(games => {
+          const game = games.find(g => parseInt(g.id) === gameId);
+          if (!game) {
+            document.getElementById('gameDetailContainer').innerHTML =
+              `<div class="alert alert-danger">Game not found. <a href="index.html">Back to store</a></div>`;
+            return;
+          }
+          renderGame(game);
+        })
+        .catch(() => {
+          document.getElementById('gameDetailContainer').innerHTML =
+            `<div class="alert alert-danger">Failed to load game.</div>`;
+        });
+    }
+
+    function renderGame(game) {
+      const imgSrc  = game.resolved_image || game.image_url || '../assets/profile.png';
+      const price   = parseFloat(game.price);
+      const isFree  = price === 0;
+      const isUser  = session && session.logged_in && session.role !== 'admin';
+
+      let buySection = '';
+      if (isUser) {
+        buySection = `
+          <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
+          <div class="game-buy-label">${isFree ? 'No purchase required' : 'One-time purchase'}</div>
+          <button class="btn-add-cart" id="addCartBtn" onclick="addToCart(${game.id})">
+            🛒 Add to Cart
+          </button>`;
+      } else {
+        buySection = `
+          <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
+          <div class="game-buy-label mb-3">${isFree ? 'No purchase required' : 'One-time purchase'}</div>
+          <div class="login-prompt">
+            <a href="login.html">Sign in</a> to add this game to your cart
+          </div>`;
+      }
+
+      document.getElementById('gameDetailContainer').innerHTML = `
+        <a href="index.html" class="back-link">← Back to Store</a>
+
+        <div class="game-detail-hero">
+          <img src="${escAttr(imgSrc)}" alt="${escAttr(game.title)}"
+               onerror="this.src='../assets/profile.png'">
+          <div class="game-detail-hero-overlay"></div>
+          <div class="game-detail-hero-content">
+            <h1 class="game-detail-title">${escHtml(game.title)}</h1>
+            <div class="game-detail-meta">
+              <span class="genre-tag">${escHtml(game.genre || 'General')}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-md-8">
+            <div class="game-detail-card">
+              <h5 class="text-white fw-bold mb-3" style="font-family:'Rajdhani',sans-serif;letter-spacing:.3px">
+                📖 About This Game
+              </h5>
+              <p class="game-detail-desc">${escHtml(game.description || 'No description available.')}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="game-buy-card">
+              ${buySection}
+            </div>
+          </div>
+        </div>`;
+
+      document.title = `${game.title} — Game Center`;
+    }
+
+    function addToCart(gameId) {
+      const btn = document.getElementById('addCartBtn');
+      if (!btn || btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = 'Adding…';
+
+      const fd = new FormData();
+      fd.append('action', 'add');
+      fd.append('game_id', gameId);
+      fd.append('quantity', 1);
+
+      fetch('../scripts/cart.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(d => {
+          if (d.success) {
+            btn.textContent = '✅ Added to Cart!';
+            btn.classList.add('added');
+            // Update badge
+            fetch('../scripts/cart.php?action=count')
+              .then(r => r.json())
+              .then(d => {
+                const badge = document.getElementById('cartCountBadge');
+                const count = parseInt(d.total) || 0;
+                if (badge) badge.textContent = count > 0 ? count : '';
+              });
+            setTimeout(() => {
+              btn.disabled = false;
+              btn.textContent = '🛒 Add to Cart';
+              btn.classList.remove('added');
+            }, 2500);
+          } else {
+            btn.disabled = false;
+            btn.textContent = '🛒 Add to Cart';
+            alert(d.error || 'Failed to add to cart.');
+          }
+        })
+        .catch(() => {
+          btn.disabled = false;
+          btn.textContent = '🛒 Add to Cart';
+          alert('Error adding to cart.');
+        });
+    }
+
+    function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escAttr(s) { return String(s??'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  </script>
+</body>
+</html>
