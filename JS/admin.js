@@ -62,9 +62,21 @@ function renderAdminOrders(orders) {
     <thead><tr><th>#</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>`;
   orders.forEach(o => {
     const date = new Date(o.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+    const avatarHtml = o.avatar_path
+      ? `<img src="../${escAttr(o.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const initialsHtml = `<span class="user-mini-initials" ${o.avatar_path ? 'style="display:none"' : ''}>${escHtml((o.username||'?').slice(0,2).toUpperCase())}</span>`;
     html += `<tr>
       <td class="text-white-50">#${o.id}</td>
-      <td class="text-white">${escHtml(o.username)}<br><small class="text-white-50">${escHtml(o.email)}</small></td>
+      <td class="text-white">
+        <div class="user-cell">
+          <div class="user-mini-avatar-wrap">${avatarHtml}${initialsHtml}</div>
+          <div>
+            <div>${escHtml(o.username)}</div>
+            <small class="text-white-50">${escHtml(o.email)}</small>
+          </div>
+        </div>
+      </td>
       <td class="text-white-50">${date}</td>
       <td class="text-white">${o.item_count}</td>
       <td class="text-white fw-bold">$${parseFloat(o.total_price).toFixed(2)}</td>
@@ -92,18 +104,36 @@ function renderAdminUsers(users) {
   if (!users.length) { c.innerHTML = '<p class="text-white-50">No users yet.</p>'; return; }
 
   let html = `<div class="orders-table-wrap"><table class="orders-table">
-    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody>`;
+    <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody>`;
   users.forEach(u => {
     const date = new Date(u.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+    const avatarHtml = u.avatar_path
+      ? `<img src="../${escAttr(u.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const initialsHtml = `<span class="user-mini-initials" ${u.avatar_path ? 'style="display:none"' : ''}>${escHtml((u.username||'?').slice(0,2).toUpperCase())}</span>`;
+    const roleBadge = u.role === 'admin'
+      ? `<span class="role-badge role-admin">⚙️ Admin</span>`
+      : `<span class="role-badge role-user">🎮 User</span>`;
+
     html += `<tr>
-      <td class="text-white-50">${u.id}</td>
-      <td class="text-white fw-bold">${escHtml(u.username)}</td>
+      <td>
+        <div class="user-cell">
+          <div class="user-mini-avatar-wrap">${avatarHtml}${initialsHtml}</div>
+          <div>
+            <div class="text-white fw-bold">${escHtml(u.username)}</div>
+            <small class="text-white-50">ID #${u.id}</small>
+          </div>
+        </div>
+      </td>
       <td class="text-white-50">${escHtml(u.email)}</td>
       <td>
-        <select class="form-select form-select-sm w-auto d-inline-block" onchange="updateRole(${u.id}, this.value)">
-          <option value="user"  ${u.role==='user'  ?'selected':''}>User</option>
-          <option value="admin" ${u.role==='admin' ?'selected':''}>Admin</option>
-        </select>
+        <div class="d-flex align-items-center gap-2">
+          ${roleBadge}
+          <select class="form-select form-select-sm w-auto d-inline-block" onchange="updateRole(${u.id}, this.value)">
+            <option value="user"  ${u.role==='user'  ?'selected':''}>User</option>
+            <option value="admin" ${u.role==='admin' ?'selected':''}>Admin</option>
+          </select>
+        </div>
       </td>
       <td class="text-white-50">${date}</td>
       <td>

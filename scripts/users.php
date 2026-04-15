@@ -16,7 +16,7 @@ $action = $_GET['action'] ?? $_POST['action'] ?? '';
 
 // ── GET all users ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
-    $stmt = $pdo->query("SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC");
+    $stmt = $pdo->query("SELECT id, username, email, role, avatar_path, created_at FROM users ORDER BY created_at DESC");
     echo json_encode($stmt->fetchAll());
     exit;
 }

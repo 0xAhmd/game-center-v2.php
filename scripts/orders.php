@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'all') {
     if (!is_admin()) { http_response_code(403); echo json_encode(['error'=>'Forbidden']); exit; }
     $stmt = $pdo->query("
         SELECT o.id, o.total_price, o.status, o.created_at,
-               u.username, u.email,
+               u.username, u.email, u.avatar_path,
                COUNT(oi.id) AS item_count
         FROM orders o
         JOIN users u ON o.user_id = u.id
