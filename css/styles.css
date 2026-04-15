@@ -108,6 +108,34 @@ body {
   vertical-align: middle;
 }
 
+/* Fix avatar alignment and size in navbar */
+.gc-navbar .gc-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gc-navbar .gc-nav-user .profile-avatar {
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.gc-navbar .gc-nav-user .profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.gc-navbar .gc-nav-user .username {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
 /* ── Hero / Search ───────────────────────────────────────────────────────── */
 .gc-hero { text-align: center; padding: 48px 20px 32px; }
 
