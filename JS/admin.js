@@ -105,6 +105,7 @@ function renderAdminUsers(users) {
 
   let html = `<div class="orders-table-wrap"><table class="orders-table">
     <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody>`;
+
   users.forEach(u => {
     const date = new Date(u.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
     const avatarHtml = u.avatar_path
@@ -115,7 +116,7 @@ function renderAdminUsers(users) {
       ? `<span class="role-badge role-admin">⚙️ Admin</span>`
       : `<span class="role-badge role-user">🎮 User</span>`;
 
-    html += `<tr>
+    html += `<tr class="user-row-clickable" onclick="goToUserProfile(${u.id})" title="View ${escAttr(u.username)}'s profile" style="cursor:pointer">
       <td>
         <div class="user-cell">
           <div class="user-mini-avatar-wrap">${avatarHtml}${initialsHtml}</div>
@@ -127,7 +128,7 @@ function renderAdminUsers(users) {
       </td>
       <td class="text-white-50">${escHtml(u.email)}</td>
       <td>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2" onclick="event.stopPropagation()">
           ${roleBadge}
           <select class="form-select form-select-sm w-auto d-inline-block" onchange="updateRole(${u.id}, this.value)">
             <option value="user"  ${u.role==='user'  ?'selected':''}>User</option>
@@ -136,13 +137,44 @@ function renderAdminUsers(users) {
         </div>
       </td>
       <td class="text-white-50">${date}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id})">Delete</button>
+      <td onclick="event.stopPropagation()">
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-light" onclick="goToUserProfile(${u.id})">View Profile</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${u.id})">Delete</button>
+        </div>
       </td>
     </tr>`;
   });
+
   html += '</tbody></table></div>';
   c.innerHTML = html;
+
+  // Add hover styles for clickable rows
+  injectRowHoverStyle();
+}
+
+// Inject hover style for clickable rows (once)
+function injectRowHoverStyle() {
+  if (document.getElementById('userRowHoverStyle')) return;
+  const style = document.createElement('style');
+  style.id = 'userRowHoverStyle';
+  style.textContent = `
+    .user-row-clickable:hover td {
+      background: rgba(108,60,225,0.12) !important;
+    }
+    .user-row-clickable:hover td:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+    .user-row-clickable:hover td:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ── Navigate to user profile ──────────────────────────────────────────────
+function goToUserProfile(userId) {
+  window.location.href = `../HTML/admin_user_profile.html?id=${userId}`;
 }
 
 function updateRole(userId, role) {
