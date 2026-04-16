@@ -11,20 +11,24 @@
     const nav = document.getElementById('navActions');
     if (!nav) return;
 
-    // expose globally
     window.__session = s;
 
-    // Build the inner content of .gc-nav-avatar-wrap
-    // The wrap itself is a fixed 32×32 circle; the image fills it via CSS
-    function navAvatarInner(username, avatarPath) {
+    // Builds a fixed 32x32 avatar circle with either an image or initials
+    function navAvatar(username, avatarPath) {
       if (avatarPath) {
-        return `<img src="../${escAttr(avatarPath)}?v=${Date.now()}"
-                     alt="${escHtml(username)}"
-                     class="gc-nav-avatar"
-                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <span class="gc-nav-avatar-initials" style="display:none">${escHtml(username.slice(0,2).toUpperCase())}</span>`;
+        return `
+          <div class="gc-nav-avatar-wrap">
+            <img src="../${escAttr(avatarPath)}?v=${Date.now()}"
+                 alt="${escHtml(username)}"
+                 class="gc-nav-avatar"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="gc-nav-avatar-initials" style="display:none">${escHtml(username.slice(0,2).toUpperCase())}</div>
+          </div>`;
       }
-      return `<span class="gc-nav-avatar-initials">${escHtml(username.slice(0,2).toUpperCase())}</span>`;
+      return `
+        <div class="gc-nav-avatar-wrap">
+          <div class="gc-nav-avatar-initials">${escHtml(username.slice(0,2).toUpperCase())}</div>
+        </div>`;
     }
 
     if (!s.logged_in) {
@@ -37,13 +41,12 @@
         <a href="../HTML/index.html" class="gc-nav-link">Store</a>
         <a href="../HTML/admin.html" class="gc-nav-link">Dashboard</a>
         <a href="../HTML/orders.html" class="gc-nav-link">Orders</a>
-        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile gc-nav-profile-link">
-          <span class="gc-nav-avatar-wrap">${navAvatarInner(s.username, s.avatar_path)}</span>
-          <span class="gc-nav-username">${escHtml(s.username)}</span>
-        </a>
+     <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
+  ${navAvatar(s.username, s.avatar_path)}
+  <span class="gc-nav-username">${escHtml(s.username)}</span>
+</a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
-      // Show floating add button if present
       const addBtn = document.getElementById('addGameBtn');
       if (addBtn) addBtn.style.display = 'block';
     } else {
@@ -53,13 +56,12 @@
           🛒 Cart <span id="cartCountBadge" class="cart-badge"></span>
         </a>
         <a href="../HTML/orders.html" class="gc-nav-link">My Orders</a>
-        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile gc-nav-profile-link">
-          <span class="gc-nav-avatar-wrap">${navAvatarInner(s.username, s.avatar_path)}</span>
+        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
           <span class="gc-nav-username">${escHtml(s.username)}</span>
+          ${navAvatar(s.username, s.avatar_path)}
         </a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
-      // Trigger cart count fetch
       fetch('../scripts/cart.php?action=count')
         .then(r => r.json())
         .then(d => {
@@ -70,7 +72,6 @@
         .catch(() => {});
     }
 
-    // Expose session to modal logic in scripts.js
     if (typeof onSessionReady === 'function') onSessionReady(s);
   }
 

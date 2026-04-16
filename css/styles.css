@@ -108,34 +108,6 @@ body {
   vertical-align: middle;
 }
 
-/* Fix avatar alignment and size in navbar */
-.gc-navbar .gc-nav-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.gc-navbar .gc-nav-user .profile-avatar {
-  width: 32px;
-  height: 32px;
-  margin: 0;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.gc-navbar .gc-nav-user .profile-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.gc-navbar .gc-nav-user .username {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-}
-
 /* ── Hero / Search ───────────────────────────────────────────────────────── */
 .gc-hero { text-align: center; padding: 48px 20px 32px; }
 
@@ -326,69 +298,87 @@ body {
 ::-webkit-scrollbar-track { background: var(--gc-bg-1); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.25); }
-/* ── Avatar additions — append to css/styles.css ────────────────────────── */
 
-/* Navbar profile link with avatar */
+/* =============================================================
+   NAVBAR PROFILE LINK + AVATAR  — replaces all previous attempts
+   ============================================================= */
+
+/* The profile anchor: flex row, vertically centered */
 .gc-nav-profile-link {
   display: flex !important;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px 4px 4px !important;
-  border-radius: 50px !important;
-  transition: background .2s !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 32px !important;   /* 🔴 CRITICAL */
 }
 .gc-nav-profile-link:hover {
   background: rgba(255,255,255,0.1) !important;
 }
-
-/* ── Fixed-size avatar circle in navbar ─────────────────────────────────── */
-.gc-nav-avatar-wrap {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;   /* prevent shrink */
-  min-height: 32px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(108, 60, 225, 0.6);
-  background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
-}
-
-.gc-nav-avatar {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.gc-nav-profile-link:hover .gc-nav-avatar-wrap {
-  border-color: var(--gc-purple-2);
-}
-
-.gc-nav-avatar-initials {
-  width: 100%;
-  height: 100%;
+.gc-nav-actions {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .65rem;
-  font-weight: 700;
-  color: #fff;
-  font-family: 'Rajdhani', sans-serif;
-  letter-spacing: .5px;
+  align-items: center; /* 🔴 CRITICAL */
 }
-
+/* Username text */
 .gc-nav-username {
-  font-size: .875rem;
-  font-weight: 500;
-  color: rgba(255,255,255,.75);
-  transition: color .2s;
-  white-space: nowrap;
+  font-size: .875rem !important;
+  font-weight: 500 !important;
+  color: rgba(255,255,255,.75) !important;
+  white-space: nowrap !important;
+  transition: color .2s !important;
 }
 .gc-nav-profile-link:hover .gc-nav-username {
-  color: #fff;
+  color: #fff !important;
+}
+
+/* The avatar container — THIS is the circle, not the img */
+.gc-nav-avatar-wrap {
+  /* Hard-lock to exactly 32x32. No exceptions. */
+  display: block !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;                    /* clips the image into the circle */
+  background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
+  border: 2px solid rgba(108, 60, 225, 0.6) !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+/* The actual <img> — fills 100% of the wrap, goes nowhere else */
+.gc-nav-avatar-wrap .gc-nav-avatar {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;               /* top:0; right:0; bottom:0; left:0 */
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 0 !important;       /* wrap handles the circle, not the img */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Initials fallback — also fills the wrap */
+.gc-nav-avatar-wrap .gc-nav-avatar-initials {
+  display: flex !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: .65rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  font-family: 'Rajdhani', sans-serif !important;
+  letter-spacing: .5px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* ── User cell in tables (admin panel) ───────────────────────────────────── */
@@ -433,7 +423,7 @@ body {
   border: 2px solid rgba(108,60,225,0.4);
 }
 
-/* ── Role badges in admin users table ────────────────────────────────────── */
+/* ── Role badges ─────────────────────────────────────────────────────────── */
 .role-badge {
   display: inline-block;
   padding: 3px 10px;
