@@ -84,14 +84,6 @@
     <div class="gc-nav-actions" id="navActions"></div>
   </nav>
 
-  <div class="gc-nav-user">
-      <div class="profile-avatar">
-        <img src="../uploads/avatars/default-avatar.png" alt="User Avatar">
-      </div>
-      <span class="username">Ultra Male</span>
-      <a href="logout.php" class="text-danger ms-3">Logout</a>
-    </div>
-
   <div class="container py-5" id="profileContainer">
     <div class="text-center text-white py-5">
       <div class="spinner-border text-light"></div>
@@ -344,7 +336,6 @@
         .then(d => {
           spinner.classList.remove('active');
           if (d.success) {
-            // Update avatar display immediately
             const avatarEl = document.getElementById('profileAvatarEl');
             const initials = (profileData?.user?.username || 'U').slice(0,2).toUpperCase();
             avatarEl.innerHTML = `<img src="../${escAttr(d.avatar_path)}?v=${Date.now()}" alt="Avatar"
@@ -361,7 +352,6 @@
           if (msgEl) msgEl.innerHTML = `<span style="color:#ff9d9d">Upload failed.</span>`;
         });
 
-      // Reset input so same file can be re-selected
       e.target.value = '';
     }
 
