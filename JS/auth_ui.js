@@ -15,6 +15,7 @@
 
     // Builds a fixed 32x32 avatar circle with either an image or initials
     function navAvatar(username, avatarPath) {
+      const initials = escHtml(username.slice(0, 2).toUpperCase());
       if (avatarPath) {
         return `
           <div class="gc-nav-avatar-wrap">
@@ -22,12 +23,12 @@
                  alt="${escHtml(username)}"
                  class="gc-nav-avatar"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="gc-nav-avatar-initials" style="display:none">${escHtml(username.slice(0,2).toUpperCase())}</div>
+            <div class="gc-nav-avatar-initials" style="display:none">${initials}</div>
           </div>`;
       }
       return `
         <div class="gc-nav-avatar-wrap">
-          <div class="gc-nav-avatar-initials">${escHtml(username.slice(0,2).toUpperCase())}</div>
+          <div class="gc-nav-avatar-initials">${initials}</div>
         </div>`;
     }
 
@@ -41,10 +42,9 @@
         <a href="../HTML/index.html" class="gc-nav-link">Store</a>
         <a href="../HTML/admin.html" class="gc-nav-link">Dashboard</a>
         <a href="../HTML/orders.html" class="gc-nav-link">Orders</a>
-     <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
-  ${navAvatar(s.username, s.avatar_path)}
-  <span class="gc-nav-username">${escHtml(s.username)}</span>
-</a>
+        <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
+          ${navAvatar(s.username, s.avatar_path)}
+        </a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
       const addBtn = document.getElementById('addGameBtn');
@@ -57,7 +57,6 @@
         </a>
         <a href="../HTML/orders.html" class="gc-nav-link">My Orders</a>
         <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
-          <span class="gc-nav-username">${escHtml(s.username)}</span>
           ${navAvatar(s.username, s.avatar_path)}
         </a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
