@@ -14,8 +14,9 @@
     // expose globally
     window.__session = s;
 
-    // Build avatar element for navbar
-    function navAvatar(username, avatarPath) {
+    // Build the inner content of .gc-nav-avatar-wrap
+    // The wrap itself is a fixed 32×32 circle; the image fills it via CSS
+    function navAvatarInner(username, avatarPath) {
       if (avatarPath) {
         return `<img src="../${escAttr(avatarPath)}?v=${Date.now()}"
                      alt="${escHtml(username)}"
@@ -37,9 +38,7 @@
         <a href="../HTML/admin.html" class="gc-nav-link">Dashboard</a>
         <a href="../HTML/orders.html" class="gc-nav-link">Orders</a>
         <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile gc-nav-profile-link">
-          <span class="gc-nav-avatar-wrap">
-            ${navAvatar(s.username, s.avatar_path)}
-          </span>
+          <span class="gc-nav-avatar-wrap">${navAvatarInner(s.username, s.avatar_path)}</span>
           <span class="gc-nav-username">${escHtml(s.username)}</span>
         </a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
@@ -55,9 +54,7 @@
         </a>
         <a href="../HTML/orders.html" class="gc-nav-link">My Orders</a>
         <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile gc-nav-profile-link">
-          <span class="gc-nav-avatar-wrap">
-            ${navAvatar(s.username, s.avatar_path)}
-          </span>
+          <span class="gc-nav-avatar-wrap">${navAvatarInner(s.username, s.avatar_path)}</span>
           <span class="gc-nav-username">${escHtml(s.username)}</span>
         </a>
         <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
