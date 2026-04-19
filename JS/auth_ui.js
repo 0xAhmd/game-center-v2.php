@@ -53,7 +53,7 @@
       nav.innerHTML = `
         <a href="../HTML/index.html" class="gc-nav-link">Store</a>
         <a href="../HTML/library.html" class="gc-nav-link gc-nav-library">
-          📚 Library
+          Library
         </a>
         <a href="../HTML/cart.html" class="gc-nav-link gc-nav-cart">
           🛒 Cart <span id="cartCountBadge" class="cart-badge"></span>
