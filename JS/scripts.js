@@ -15,10 +15,14 @@ if (searchInput) {
   });
 }
 
-// ── Called by auth_ui.js once session is loaded ───────────────────────────
-function onSessionReady(session) {
-  window.__session = session;
-}
+// Keep any existing onSessionReady chain (set by fetch_games.js)
+(function() {
+  var _prev = window.onSessionReady;
+  window.onSessionReady = function(session) {
+    window.__session = session;
+    if (typeof _prev === 'function') _prev(session);
+  };
+})();
 
 // ── Open modal or navigate to game page ───────────────────────────────────
 function openGameModal(title, id) {

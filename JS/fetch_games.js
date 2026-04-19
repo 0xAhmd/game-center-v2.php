@@ -156,33 +156,10 @@ function escHtml(str) {
 function escAttr(str) {
   return String(str ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
-// Wait for session to be ready before fetching (auth_ui.js sets window.__session)
-// We hook into onSessionReady if defined, otherwise fire on DOMContentLoaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    // If auth_ui hasn't fired yet, wait for it
-    if (window.__session !== undefined) {
-      fetchGames();
-    } else {
-      window._pendingFetchGames = true;
-    }
-  });
-} else {
-  if (window.__session !== undefined) {
+// Wait for auth_ui.js to fire onSessionReady, then fetch games
+window.onSessionReady = (function(_orig) {
+  return function(s) {
+    if (typeof _orig === 'function') _orig(s);
     fetchGames();
-  } else {
-    window._pendingFetchGames = true;
-  }
-}
-
-// Called by auth_ui.js indirectly — scripts.js defines onSessionReady,
-// but fetch_games also needs the session. We patch via a flag.
-const _origOnSessionReady = window.onSessionReady;
-window.onSessionReady = function(s) {
-  if (_origOnSessionReady) _origOnSessionReady(s);
-  if (window._pendingFetchGames) {
-    window._pendingFetchGames = false;
-    fetchGames();
-  }
-};
+  };
+})(window.onSessionReady);
