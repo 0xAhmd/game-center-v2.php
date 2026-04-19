@@ -112,12 +112,33 @@
       box-shadow: 0 8px 24px rgba(108,60,225,.5);
     }
     .btn-add-cart:disabled {
-      opacity: .5;
+      opacity: .6;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
     .btn-add-cart.added {
       background: linear-gradient(135deg, #1a7a4a, #28a865);
+    }
+    /* Owned / in-cart status blocks */
+    .game-status-block {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-size: .95rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .3px;
+    }
+    .game-status-owned {
+      background: rgba(40,168,101,.15);
+      border: 1px solid rgba(40,168,101,.35);
+      color: #7effc2;
+    }
+    .game-status-incart {
+      background: rgba(0,212,255,.12);
+      border: 1px solid rgba(0,212,255,.3);
+      color: #7ee8ff;
     }
     .back-link {
       display: inline-flex;
@@ -185,9 +206,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../JS/auth_ui.js"></script>
   <script>
-    const params   = new URLSearchParams(window.location.search);
-    const gameId   = parseInt(params.get('id'));
-    let   session  = null;
+    const params  = new URLSearchParams(window.location.search);
+    const gameId  = parseInt(params.get('id'));
+    let   session = null;
 
     if (!gameId) {
       window.location.href = 'index.html';
@@ -196,7 +217,6 @@
     // Called by auth_ui.js once session is ready
     function onSessionReady(s) {
       session = s;
-      // Redirect admin to store (they use modal)
       if (s.role === 'admin') {
         window.location.href = 'index.html';
         return;
@@ -205,16 +225,28 @@
     }
 
     function loadGame() {
-      fetch('../scripts/get_games.php')
-        .then(r => r.json())
-        .then(games => {
+      const isUser = session && session.logged_in && session.role !== 'admin';
+
+      // Fetch games + (if logged in) owned IDs and cart IDs in parallel
+      const gamesP  = fetch('../scripts/get_games.php').then(r => r.json());
+      const ownedP  = isUser
+        ? fetch('../scripts/get_library_ids.php').then(r => r.json()).catch(() => [])
+        : Promise.resolve([]);
+      const cartP   = isUser
+        ? fetch('../scripts/get_cart_ids.php').then(r => r.json()).catch(() => [])
+        : Promise.resolve([]);
+
+      Promise.all([gamesP, ownedP, cartP])
+        .then(([games, ownedIds, cartIds]) => {
           const game = games.find(g => parseInt(g.id) === gameId);
           if (!game) {
             document.getElementById('gameDetailContainer').innerHTML =
               `<div class="alert alert-danger">Game not found. <a href="index.html">Back to store</a></div>`;
             return;
           }
-          renderGame(game);
+          const ownedSet = new Set(ownedIds.map(Number));
+          const cartSet  = new Set(cartIds.map(Number));
+          renderGame(game, ownedSet, cartSet);
         })
         .catch(() => {
           document.getElementById('gameDetailContainer').innerHTML =
@@ -222,26 +254,53 @@
         });
     }
 
-    function renderGame(game) {
+    function renderGame(game, ownedSet, cartSet) {
       const imgSrc  = game.resolved_image || game.image_url || '../assets/profile.png';
       const price   = parseFloat(game.price);
       const isFree  = price === 0;
       const isUser  = session && session.logged_in && session.role !== 'admin';
+      const isOwned = ownedSet.has(parseInt(game.id));
+      const inCart  = cartSet.has(parseInt(game.id));
 
       let buySection = '';
+
       if (isUser) {
-        buySection = `
+        const priceHtml = `
           <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
-          <div class="game-buy-label">${isFree ? 'No purchase required' : 'One-time purchase'}</div>
-          <button class="btn-add-cart" id="addCartBtn" onclick="addToCart(${game.id})">
-            🛒 Add to Cart
-          </button>`;
+          <div class="game-buy-label">${isFree ? 'No purchase required' : 'One-time purchase'}</div>`;
+
+        if (isOwned) {
+          // Already in library — purchased and completed
+          buySection = priceHtml + `
+            <div class="game-status-block game-status-owned">
+              ✅ Already in your Library
+            </div>
+            <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
+              You already own this game
+            </div>`;
+        } else if (inCart) {
+          // Sitting in cart, not yet purchased
+          buySection = priceHtml + `
+            <div class="game-status-block game-status-incart">
+              🛒 Already in your Cart
+            </div>
+            <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
+              <a href="cart.html" style="color:rgba(0,212,255,.8);text-decoration:none">Go to cart →</a>
+            </div>`;
+        } else {
+          // Available to add
+          buySection = priceHtml + `
+            <button class="btn-add-cart" id="addCartBtn" onclick="addToCart(${game.id})">
+              🛒 Add to Cart
+            </button>`;
+        }
       } else {
+        // Guest — show price and login prompt
         buySection = `
           <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
           <div class="game-buy-label mb-3">${isFree ? 'No purchase required' : 'One-time purchase'}</div>
           <div class="login-prompt">
-            <a href="login.html">Sign in</a> to add this game to your cart
+            <a href="login.html">Sign in</a> to purchase this game
           </div>`;
       }
 
@@ -294,9 +353,20 @@
         .then(r => r.json())
         .then(d => {
           if (d.success) {
-            btn.textContent = '✅ Added to Cart!';
-            btn.classList.add('added');
-            // Update badge
+            // Swap button to "in cart" state — no re-adding allowed
+            const buyCard = btn.closest('.game-buy-card');
+            btn.remove();
+            const statusDiv = document.createElement('div');
+            statusDiv.innerHTML = `
+              <div class="game-status-block game-status-incart">
+                🛒 Added to Cart
+              </div>
+              <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
+                <a href="cart.html" style="color:rgba(0,212,255,.8);text-decoration:none">Go to cart →</a>
+              </div>`;
+            buyCard.appendChild(statusDiv);
+
+            // Update navbar badge
             fetch('../scripts/cart.php?action=count')
               .then(r => r.json())
               .then(d => {
@@ -304,11 +374,6 @@
                 const count = parseInt(d.total) || 0;
                 if (badge) badge.textContent = count > 0 ? count : '';
               });
-            setTimeout(() => {
-              btn.disabled = false;
-              btn.textContent = '🛒 Add to Cart';
-              btn.classList.remove('added');
-            }, 2500);
           } else {
             btn.disabled = false;
             btn.textContent = '🛒 Add to Cart';

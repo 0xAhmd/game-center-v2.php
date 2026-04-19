@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2026 at 12:28 AM
+-- Generation Time: Apr 19, 2026 at 08:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -107,7 +107,8 @@ INSERT INTO `games` (`id`, `title`, `genre`, `price`, `image_url`, `image_path`,
 (78, 'Microsoft Flight Simulator', 'Simulation', 60.00, 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1250410/header.jpg?t=1740686114', NULL, 'Microsoft Flight Simulator offers the most realistic flight simulation experience ever created, featuring a vast open world with real-time weather conditions and accurate aircraft models.', '2026-04-14 22:21:49'),
 (79, 'Among Us', 'Party Game', 5.00, 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/945360/header.jpg?t=1731953093', NULL, 'Among Us is an online multiplayer party game where players work together to complete tasks on a spaceship while trying to unmask the Impostor who is sabotaging them. With its fun and suspenseful gameplay, Among Us has become a social gaming phenomenon.', '2026-04-14 22:21:49'),
 (80, 'Culling Game', 'Action', 99999999.99, 'https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/10/culling-game-strongest-characters.jpg', NULL, 'The Culling Game is the most unprecedented act of jujutsu terrorism ever enacted. Orchestrated by Kenjaku with the goal of evolving humanity through cursed energy, it functions as a lethal battle royale where players kill one another with jujutsu across ten barrier colonies down Japan.', '2026-04-14 22:21:49'),
-(81, 'Greed Island', 'Adventure', 99999999.99, 'https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1400/https://inkarnate-api-as-production.s3.amazonaws.com/4AG5cnXa9YBCCq6EeVEBNA', NULL, 'Greed Island is a dangerous video game meant only for Hunters. Played on the JoyStation Console, it is out of print and sells at auctions for at least 8 billion. The game transports players bodies into the game world, only releasing them when they die, win, or leave. It can only be played by Nen users.', '2026-04-14 22:21:49');
+(81, 'Greed Island', 'Adventure', 99999999.99, 'https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1400/https://inkarnate-api-as-production.s3.amazonaws.com/4AG5cnXa9YBCCq6EeVEBNA', NULL, 'Greed Island is a dangerous video game meant only for Hunters. Played on the JoyStation Console, it is out of print and sells at auctions for at least 8 billion. The game transports players bodies into the game world, only releasing them when they die, win, or leave. It can only be played by Nen users.', '2026-04-14 22:21:49'),
+(82, 'Hollow Knight: Silksong', 'Souls', 300.00, 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg?t=1776125736', NULL, 'As the lethal hunter Hornet, adventure through a kingdom ruled by silk and song! Captured and taken to this unfamiliar world, prepare to battle mighty foes and solve ancient mysteries as you ascend on a deadly pilgrimage to the kingdom’s peak.\r\n\r\nHollow Knight: Silksong is the epic sequel to Hollow Knight, the award winning action-adventure. Journey to all-new lands, discover new powers, battle vast hordes of bugs and beasts and uncover secrets tied to your nature and your past.', '2026-04-19 18:44:18');
 
 -- --------------------------------------------------------
 
@@ -128,7 +129,11 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `total_price`, `status`, `created_at`) VALUES
-(1, 3, 99999999.99, 'cancelled', '2026-04-14 22:23:23');
+(1, 3, 99999999.99, 'cancelled', '2026-04-14 22:23:23'),
+(2, 3, 99999999.99, 'completed', '2026-04-19 17:58:45'),
+(3, 3, 99999999.99, 'completed', '2026-04-19 18:00:28'),
+(4, 3, 50.00, 'completed', '2026-04-19 18:05:04'),
+(5, 3, 0.00, 'completed', '2026-04-19 18:37:21');
 
 -- --------------------------------------------------------
 
@@ -149,7 +154,14 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `game_id`, `quantity`, `price`) VALUES
-(1, 1, 80, 1, 99999999.99);
+(1, 1, 80, 1, 99999999.99),
+(2, 2, 81, 1, 99999999.99),
+(3, 3, 80, 1, 99999999.99),
+(4, 3, 78, 1, 60.00),
+(5, 3, 65, 1, 50.00),
+(6, 3, 59, 1, 60.00),
+(7, 4, 70, 1, 50.00),
+(8, 5, 39, 1, 0.00);
 
 -- --------------------------------------------------------
 
@@ -163,6 +175,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','user') NOT NULL DEFAULT 'user',
+  `avatar_path` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -170,10 +183,39 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'admin', 'admin@gamecenter.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-04-14 22:09:39'),
-(2, 'George Wassouf', 'georgew@gmail.com', '$2y$10$eeI9iNF8pd/WwCJh0lV5Ou3hkQSUKP46KXZdFpl/yNpT0sChdXmSa', 'admin', '2026-04-14 22:09:49'),
-(3, 'Ultra Male', 'ultramale200987@gmail.com', '$2y$10$JgiRFAiHkIZJTbZsImHJZegF4pPAIgatCum677tsxHEZdUHEI5oPC', 'user', '2026-04-14 22:23:02');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `avatar_path`, `created_at`) VALUES
+(1, 'admin', 'admin@gamecenter.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', NULL, '2026-04-14 22:09:39'),
+(2, 'George Wassouf', 'georgew@gmail.com', '$2y$10$eeI9iNF8pd/WwCJh0lV5Ou3hkQSUKP46KXZdFpl/yNpT0sChdXmSa', 'admin', 'uploads/avatars/avatar_2_69e50f49967a7.jpg', '2026-04-14 22:09:49'),
+(3, 'Ultra Male', 'ultramale200987@gmail.com', '$2y$10$JgiRFAiHkIZJTbZsImHJZegF4pPAIgatCum677tsxHEZdUHEI5oPC', 'user', 'uploads/avatars/avatar_3_69e50fb4d188c.jpg', '2026-04-14 22:23:02'),
+(4, 'User1', 'user@gmail.com', '$2y$10$GBJNoTHR9C0yptSJIKhFH.yAvN3FZFAnirGxQd8LLvkZPy8N17SFG', 'user', NULL, '2026-04-19 16:55:27'),
+(5, 'Mohany165', 'Mohany165@gmail.com', '$2y$10$7Ywg7RkZE6nm1I4hXjoVy.KcuRl0U3qZySOV245roTYjsjZffzSgK', 'user', NULL, '2026-04-19 17:05:37'),
+(6, 'Admin1', 'admin@gmail.com', '$2y$10$.4hXOhF69Vo/mR57VNPHcuwWSofJ2f9.1tcdaylL4EDrJWAIG7vzy', 'user', NULL, '2026-04-19 17:11:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_library`
+--
+
+CREATE TABLE `user_library` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `purchase_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_library`
+--
+
+INSERT INTO `user_library` (`id`, `user_id`, `game_id`, `purchase_date`) VALUES
+(3, 3, 81, '2026-04-19 17:59:19'),
+(4, 3, 80, '2026-04-19 18:00:47'),
+(5, 3, 78, '2026-04-19 18:00:47'),
+(6, 3, 65, '2026-04-19 18:00:47'),
+(7, 3, 59, '2026-04-19 18:00:47'),
+(8, 3, 70, '2026-04-19 18:05:27'),
+(9, 3, 39, '2026-04-19 18:37:34');
 
 --
 -- Indexes for dumped tables
@@ -217,6 +259,15 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
 
 --
+-- Indexes for table `user_library`
+--
+ALTER TABLE `user_library`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_game` (`user_id`,`game_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -224,31 +275,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `user_library`
+--
+ALTER TABLE `user_library`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -273,6 +330,13 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `user_library`
+--
+ALTER TABLE `user_library`
+  ADD CONSTRAINT `lib_fk_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `lib_fk_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
