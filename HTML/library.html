@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Library — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+  <style>
+    /* ── Library hero ───────────────────────────────────────── */
+    .library-hero {
+      text-align: center;
+      padding: 44px 20px 28px;
+      position: relative;
+    }
+    .library-hero-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      margin: 0 0 8px;
+      background: linear-gradient(135deg, #fff 0%, #00d4ff 55%, #9b5de5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .library-subtitle {
+      color: rgba(255,255,255,.45);
+      font-size: .95rem;
+      margin: 0 0 24px;
+    }
+    .library-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(108,60,225,.18);
+      border: 1px solid rgba(108,60,225,.35);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: .85rem;
+      color: #c4a8ff;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    /* ── Search inside library ──────────────────────────────── */
+    .library-search-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    /* ── Library card ───────────────────────────────────────── */
+    .lib-card {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .28s ease, box-shadow .28s ease, border-color .28s;
+      position: relative;
+    }
+    .lib-card:hover {
+      transform: translateY(-6px) scale(1.015);
+      box-shadow: 0 20px 56px rgba(0,0,0,.65);
+      border-color: rgba(108,60,225,.4);
+    }
+
+    /* Owned badge — top-left ribbon */
+    .owned-ribbon {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: linear-gradient(135deg, #1a7a4a, #28a865);
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      z-index: 2;
+      box-shadow: 0 2px 10px rgba(40,168,101,.4);
+    }
+
+    .lib-card-img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+      transition: filter .25s;
+    }
+    .lib-card:hover .lib-card-img { filter: brightness(1.08); }
+
+    .lib-card-body {
+      padding: 18px 18px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lib-card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 6px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lib-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lib-card-desc {
+      color: rgba(255,255,255,.5);
+      font-size: .82rem;
+      line-height: 1.55;
+      flex: 1;
+      /* 3-line clamp */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .lib-card-footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+      margin-top: 14px;
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lib-purchase-date {
+      font-size: .72rem;
+      color: rgba(255,255,255,.3);
+      letter-spacing: .2px;
+    }
+
+    /* ── Play button ────────────────────────────────────────── */
+    .btn-play {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      background: linear-gradient(135deg, #1a7a4a, #28a865);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .22s;
+      white-space: nowrap;
+    }
+    .btn-play:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(40,168,101,.5);
+    }
+    .btn-play:active { transform: translateY(0); }
+    .btn-play.launching {
+      background: linear-gradient(135deg, #1a5f7a, #0097b2);
+      pointer-events: none;
+    }
+    .btn-play.launched {
+      background: linear-gradient(135deg, #1a7a4a, #28a865);
+      pointer-events: none;
+    }
+
+    /* Remove button */
+    .btn-remove-lib {
+      background: none;
+      border: none;
+      color: rgba(255,107,107,.55);
+      font-size: .78rem;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 8px;
+      transition: all .2s;
+      line-height: 1;
+    }
+    .btn-remove-lib:hover {
+      color: #ff6b6b;
+      background: rgba(255,107,107,.1);
+    }
+
+    /* ── Toast container (top-right) ────────────────────────── */
+    #libToastArea {
+      position: fixed;
+      top: 80px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .lib-toast {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(20,20,36,.96);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 14px 18px;
+      min-width: 260px;
+      max-width: 340px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.55);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateX(24px);
+      transition: opacity .3s ease, transform .3s ease;
+      pointer-events: all;
+    }
+    .lib-toast.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .lib-toast-icon { font-size: 1.3rem; line-height: 1; flex-shrink: 0; }
+    .lib-toast-body { flex: 1; }
+    .lib-toast-title {
+      font-weight: 700;
+      font-size: .88rem;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .lib-toast-msg { font-size: .8rem; color: rgba(255,255,255,.55); }
+
+    .lib-toast.toast-success { border-color: rgba(40,168,101,.35); }
+    .lib-toast.toast-launch  { border-color: rgba(0,212,255,.35); }
+    .lib-toast.toast-error   { border-color: rgba(231,76,60,.35); }
+
+    /* ── Empty state ────────────────────────────────────────── */
+    .lib-empty {
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .lib-empty-icon {
+      font-size: 4.5rem;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 30px rgba(108,60,225,.5));
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+    .lib-empty h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700; }
+
+    /* ── Sort bar ───────────────────────────────────────────── */
+    .lib-sort-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .lib-sort-label { font-size: .8rem; color: rgba(255,255,255,.4); }
+    .sort-chip {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.6);
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .sort-chip:hover, .sort-chip.active {
+      background: rgba(108,60,225,.2);
+      border-color: rgba(108,60,225,.4);
+      color: #c4a8ff;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="gc-navbar">
+    <div class="gc-nav-brand">
+      <a href="index.html" style="text-decoration:none;color:inherit">
+        <img src="../assets/logo.png" alt="Logo" width="40" onerror="this.style.display='none'">
+        <span>Game Center</span>
+      </a>
+    </div>
+    <div class="gc-nav-actions" id="navActions"></div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="library-hero">
+    <div class="library-count-badge" id="libCountBadge" style="display:none">
+      🎮 <span id="libCountText">0 games</span>
+    </div>
+    <h1 class="library-hero-title">My Library</h1>
+    <p class="library-subtitle">Your personal collection of owned games</p>
+    <div class="library-search-wrap">
+      <input type="text" id="libSearchInput" class="form-control"
+             placeholder="Search your library…"
+             style="max-width:440px; border-radius:50px; padding:12px 22px;
+                    background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.12);
+                    color:#fff; font-size:.95rem;">
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container pb-5">
+
+    <!-- Sort bar -->
+    <div class="lib-sort-bar" id="libSortBar" style="display:none">
+      <span class="lib-sort-label">Sort by:</span>
+      <button class="sort-chip active" onclick="setSort('date')">Recent</button>
+      <button class="sort-chip" onclick="setSort('title')">Title A–Z</button>
+      <button class="sort-chip" onclick="setSort('price')">Price</button>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="row g-4" id="libGrid">
+      <!-- Loading skeleton -->
+      <div class="col-12 text-center text-white py-5" id="libLoading">
+        <div class="spinner-border text-light"></div>
+        <p class="mt-2 text-white-50">Loading your library…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast area -->
+  <div id="libToastArea"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/auth_ui.js"></script>
+  <script src="../JS/library.js"></script>
+</body>
+</html>
