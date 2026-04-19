@@ -1,15 +1,16 @@
 // JS/fetch_games.js
-// Fetches games + user library IDs, renders cards with "Add to Library" + "Owned" badges
+// Fetches games + user library IDs (games owned via completed purchases), renders cards.
+// The "Add to Library" button has been removed — games are added automatically
+// when an admin marks an order as completed.
 
-let _ownedGameIds = new Set(); // game IDs the current user owns
+let _ownedGameIds = new Set();
 
 function fetchGames() {
   const session = window.__session || {};
   const isUser  = session.logged_in && session.role !== 'admin';
 
-  // Fetch games + (if user) their owned IDs in parallel
-  const gamesPromise  = fetch('../scripts/get_games.php').then(r => r.json());
-  const ownedPromise  = isUser
+  const gamesPromise = fetch('../scripts/get_games.php').then(r => r.json());
+  const ownedPromise = isUser
     ? fetch('../scripts/get_library_ids.php').then(r => r.json()).catch(() => [])
     : Promise.resolve([]);
 
@@ -29,21 +30,7 @@ function fetchGames() {
         const price   = parseFloat(game.price) === 0 ? 'Free' : `$${parseFloat(game.price).toFixed(2)}`;
         const isOwned = _ownedGameIds.has(parseInt(game.id));
 
-        // "Add to Library" button — only for logged-in non-admin users
-        let libBtn = '';
-        if (isUser) {
-          if (isOwned) {
-            libBtn = `<button class="btn-lib-card owned" disabled title="Already in library">
-                        ✓ Owned
-                      </button>`;
-          } else {
-            libBtn = `<button class="btn-lib-card" onclick="storeAddToLibrary(event, ${game.id}, this)"
-                              title="Add to Library">
-                        📚 Add to Library
-                      </button>`;
-          }
-        }
-
+        // Show "In Library" badge only — no direct add button
         const ownedBadge = isOwned
           ? `<span class="owned-store-badge">✓ In Library</span>`
           : '';
@@ -64,7 +51,9 @@ function fetchGames() {
       </p>
       <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
         <span class="price-badge">${price}</span>
-        ${libBtn}
+        ${isUser && isOwned
+          ? `<span class="btn-lib-card owned" style="cursor:default">✓ Owned</span>`
+          : ''}
       </div>
     </div>
   </div>
@@ -79,60 +68,10 @@ function fetchGames() {
     });
 }
 
-/* ── Add to Library from store card ────────────────────────────────────── */
-function storeAddToLibrary(event, gameId, btn) {
-  event.stopPropagation(); // don't open modal
-  btn.disabled  = true;
-  btn.innerHTML = '⏳ Adding…';
-
-  const fd = new FormData();
-  fd.append('game_id', gameId);
-
-  fetch('../scripts/add_to_library.php', { method: 'POST', body: fd })
-    .then(r => r.json())
-    .then(d => {
-      if (d.success || d.error === 'already_owned') {
-        // Mark as owned
-        btn.classList.add('owned');
-        btn.innerHTML = '✓ Owned';
-        btn.disabled  = true;
-        btn.title     = 'Already in library';
-        _ownedGameIds.add(Number(gameId));
-
-        // Add "In Library" badge to image
-        const card = btn.closest('.game-card');
-        if (card) {
-          const imgWrap = card.querySelector('[style*="position:relative"]');
-          if (imgWrap && !imgWrap.querySelector('.owned-store-badge')) {
-            const badge = document.createElement('span');
-            badge.className   = 'owned-store-badge';
-            badge.textContent = '✓ In Library';
-            imgWrap.appendChild(badge);
-          }
-        }
-
-        showFetchToast(d.success
-          ? d.message
-          : 'Already in your library!', 'success');
-      } else {
-        btn.disabled  = false;
-        btn.innerHTML = '📚 Add to Library';
-        showFetchToast(d.error || 'Failed to add to library.', 'danger');
-      }
-    })
-    .catch(() => {
-      btn.disabled  = false;
-      btn.innerHTML = '📚 Add to Library';
-      showFetchToast('Error — please try again.', 'danger');
-    });
-}
-
-/* ── Reuse the scripts.js toast ─────────────────────────────────────────── */
 function showFetchToast(msg, type = 'success') {
   if (typeof showToast === 'function') {
     showToast(msg, type);
   } else {
-    // Fallback inline toast
     let container = document.getElementById('toastContainer');
     if (!container) {
       container = document.createElement('div');
@@ -156,7 +95,7 @@ function escHtml(str) {
 function escAttr(str) {
   return String(str ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-// Wait for auth_ui.js to fire onSessionReady, then fetch games
+
 window.onSessionReady = (function(_orig) {
   return function(s) {
     if (typeof _orig === 'function') _orig(s);

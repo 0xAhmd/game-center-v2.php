@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'my_orders') {
 // ── GET: order detail ──────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'detail') {
     $order_id = intval($_GET['order_id'] ?? 0);
-    // Ensure user owns order (or is admin)
     $ownerCheck = $pdo->prepare("SELECT user_id FROM orders WHERE id = ?");
     $ownerCheck->execute([$order_id]);
     $order = $ownerCheck->fetch();
@@ -73,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'all') {
 
 // ── POST: checkout ─────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'checkout') {
-    // Fetch cart items
     $stmt = $pdo->prepare("
         SELECT c.game_id, c.quantity, g.price
         FROM cart c
@@ -93,18 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'checkout') {
 
     $pdo->beginTransaction();
     try {
-        // Create order
         $stmt = $pdo->prepare("INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, 'pending')");
         $stmt->execute([$user_id, $total]);
         $order_id = $pdo->lastInsertId();
 
-        // Insert order items
         $itemStmt = $pdo->prepare("INSERT INTO order_items (order_id, game_id, quantity, price) VALUES (?, ?, ?, ?)");
         foreach ($items as $item) {
             $itemStmt->execute([$order_id, $item['game_id'], $item['quantity'], $item['price']]);
         }
 
-        // Clear cart
         $pdo->prepare("DELETE FROM cart WHERE user_id = ?")->execute([$user_id]);
 
         $pdo->commit();
@@ -120,14 +115,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'checkout') {
 // ── POST: update order status (admin) ─────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'update_status') {
     if (!is_admin()) { http_response_code(403); echo json_encode(['error'=>'Forbidden']); exit; }
+
     $order_id = intval($_POST['order_id'] ?? 0);
     $status   = $_POST['status'] ?? '';
     $allowed  = ['pending','processing','completed','cancelled'];
+
     if (!in_array($status, $allowed)) {
-        http_response_code(400); echo json_encode(['error'=>'Invalid status']); exit;
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid status']);
+        exit;
     }
-    $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
-    $stmt->execute([$status, $order_id]);
+
+    // Fetch current status before updating
+    $currentStmt = $pdo->prepare("SELECT status, user_id FROM orders WHERE id = ?");
+    $currentStmt->execute([$order_id]);
+    $currentOrder = $currentStmt->fetch();
+
+    if (!$currentOrder) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Order not found']);
+        exit;
+    }
+
+    $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?")->execute([$status, $order_id]);
+
+    // ── Auto-add games to library when order is marked completed ─────────────
+    // Only trigger if transitioning INTO completed (not already completed)
+    if ($status === 'completed' && $currentOrder['status'] !== 'completed') {
+        $order_user_id = (int) $currentOrder['user_id'];
+
+        // Get all games in this order
+        $itemsStmt = $pdo->prepare("SELECT game_id FROM order_items WHERE order_id = ?");
+        $itemsStmt->execute([$order_id]);
+        $games = $itemsStmt->fetchAll();
+
+        // Insert into user_library, skip duplicates
+        $libStmt = $pdo->prepare("
+            INSERT IGNORE INTO user_library (user_id, game_id)
+            VALUES (?, ?)
+        ");
+        foreach ($games as $game) {
+            $libStmt->execute([$order_user_id, $game['game_id']]);
+        }
+    }
+
     echo json_encode(['success' => true]);
     exit;
 }
