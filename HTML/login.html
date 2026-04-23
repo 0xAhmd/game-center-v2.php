@@ -19,10 +19,10 @@
         <p>Sign in to your account</p>
       </div>
 
-      <!-- Alert area -->
       <div id="authAlert"></div>
 
-      <form method="POST" action="../scripts/login.php" class="auth-form">
+      <!-- ✅ Updated action path -->
+      <form method="POST" action="../features/auth/login.php" class="auth-form">
         <div class="form-group-auth">
           <label>Email Address</label>
           <input type="email" name="email" placeholder="you@example.com" required autocomplete="email">
@@ -46,7 +46,6 @@
   </div>
 
   <script>
-    // Show error/success from query params
     const params = new URLSearchParams(window.location.search);
     const alertDiv = document.getElementById('authAlert');
     if (params.get('error')) {

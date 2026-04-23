@@ -1,11 +1,11 @@
 <?php
-// scripts/session_status.php — returns current auth state as JSON
-require_once 'db_connect.php';
-require_once 'auth.php';
+// features/auth/session_status.php
+// Returns the current login state as JSON — called by auth_ui.js on every page
+require_once '../shared/db.php';
+require_once '../shared/auth_helpers.php';
 
 auto_login_from_cookie($pdo);
 
-// Fetch avatar_path from DB if logged in
 $avatar_path = null;
 if (is_logged_in()) {
     $stmt = $pdo->prepare("SELECT avatar_path FROM users WHERE id = ?");

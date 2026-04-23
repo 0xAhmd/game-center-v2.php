@@ -1,42 +1,23 @@
 <?php
-// scripts/admin_user_profile.php — Admin: view any user's profile data (JSON)
-require_once 'db_connect.php';
-require_once 'auth.php';
+// features/admin/user_profile.php
+// Admin only — view any user's profile data
+require_once '../shared/db.php';
+require_once '../shared/auth_helpers.php';
 
 auto_login_from_cookie($pdo);
 header('Content-Type: application/json');
 
-// Admin-only endpoint
-if (!is_logged_in()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Not authenticated']);
-    exit;
-}
-if (!is_admin()) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Forbidden']);
-    exit;
-}
+if (!is_logged_in()) json_error('Not authenticated', 401);
+if (!is_admin())     json_error('Forbidden', 403);
 
 $target_id = intval($_GET['user_id'] ?? 0);
-if ($target_id < 1) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid user ID']);
-    exit;
-}
+if ($target_id < 1) json_error('Invalid user ID');
 
-// Fetch user
 $stmt = $pdo->prepare("SELECT id, username, email, role, avatar_path, created_at FROM users WHERE id = ?");
 $stmt->execute([$target_id]);
 $user = $stmt->fetch();
+if (!$user) json_error('User not found', 404);
 
-if (!$user) {
-    http_response_code(404);
-    echo json_encode(['error' => 'User not found']);
-    exit;
-}
-
-// Order stats
 $statsStmt = $pdo->prepare("
     SELECT
         COUNT(*) AS total_orders,
@@ -46,9 +27,7 @@ $statsStmt = $pdo->prepare("
     FROM orders WHERE user_id = ?
 ");
 $statsStmt->execute([$target_id]);
-$stats = $statsStmt->fetch();
 
-// Recent orders
 $recentStmt = $pdo->prepare("
     SELECT o.id, o.total_price, o.status, o.created_at,
            COUNT(oi.id) AS item_count
@@ -60,10 +39,9 @@ $recentStmt = $pdo->prepare("
     LIMIT 5
 ");
 $recentStmt->execute([$target_id]);
-$recentOrders = $recentStmt->fetchAll();
 
 echo json_encode([
     'user'          => $user,
-    'stats'         => $stats,
-    'recent_orders' => $recentOrders,
+    'stats'         => $statsStmt->fetch(),
+    'recent_orders' => $recentStmt->fetchAll(),
 ]);

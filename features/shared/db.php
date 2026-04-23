@@ -1,14 +1,12 @@
 <?php
-// scripts/db_connect.php
-// PDO-based connection — used by all new scripts
-// Legacy MySQLi $conn kept for backward compatibility with original scripts
+// features/shared/db.php
+// One place for the database connection — include this everywhere
 
 $db   = "game_center";
 $host = "localhost";
 $user = "root";
 $pass = "";
 
-// ── PDO (used by all new auth / cart / order scripts) ──────────────────────
 try {
     $pdo = new PDO(
         "mysql:host=$host;dbname=$db;charset=utf8mb4",
@@ -25,7 +23,7 @@ try {
     die(json_encode(['error' => 'Database connection failed.']));
 }
 
-// ── MySQLi (kept for original get_games / add_game / etc.) ─────────────────
+// MySQLi kept for get_games (uses mysqli_query)
 $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) {
     die("MySQLi Connection failed: " . mysqli_connect_error());

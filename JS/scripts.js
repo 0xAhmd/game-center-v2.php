@@ -1,9 +1,10 @@
 // JS/scripts.js — Search + Modal logic (role-aware)
+// Updated to use features/ paths
 
 let currentEditingGameId = null;
 let currentGameData      = {};
 
-// ── Search ────────────────────────────────────────────────────────────────
+// Search
 const searchInput = document.getElementById('searchInput');
 if (searchInput) {
   searchInput.addEventListener('input', () => {
@@ -15,7 +16,6 @@ if (searchInput) {
   });
 }
 
-// Keep any existing onSessionReady chain (set by fetch_games.js)
 (function() {
   var _prev = window.onSessionReady;
   window.onSessionReady = function(session) {
@@ -24,27 +24,23 @@ if (searchInput) {
   };
 })();
 
-// ── Open modal or navigate to game page ───────────────────────────────────
+// Open modal (admin) or navigate to game page (user)
 function openGameModal(title, id) {
   const session = window.__session || {};
   const isAdmin = session.role === 'admin';
 
-  // Non-admin users go to the dedicated game details page
   if (!isAdmin) {
     window.location.href = `../HTML/game.html?id=${id}`;
     return;
   }
 
-  // ── Admin: show editable modal (unchanged) ────────────────────────────
   currentEditingGameId = id;
 
-  // Fetch game data from already-loaded cards
   const cards = document.querySelectorAll('#game-cards-container .game-card');
   cards.forEach(card => {
     if (card.querySelector('.card-title')?.textContent === title) {
       currentGameData = {
-        id,
-        title,
+        id, title,
         genre:       card.querySelector('.genre-tag')?.textContent || '',
         description: card.querySelector('.card-text')?.textContent || '',
         price:       card.querySelector('.price-badge')?.textContent.replace('$','').replace('Free','0') || '0',
@@ -70,10 +66,9 @@ function openGameModal(title, id) {
   new bootstrap.Modal(document.getElementById('editGameModal')).show();
 }
 
-// Alias for backwards compat
 function openEditModal(title, id) { openGameModal(title, id); }
 
-// ── Save edit (admin) ─────────────────────────────────────────────────────
+// Save edit (admin)
 function saveEdit() {
   const data = {
     id:          currentEditingGameId,
@@ -84,12 +79,11 @@ function saveEdit() {
     image_url:   document.getElementById('editGameImageUrl').value,
   };
 
-  fetch('../scripts/update_game.php', {
+  fetch('../features/games/update_game.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams(data).toString()
   })
-    .then(r => r.text())
     .then(() => {
       bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
       fetchGames();
@@ -98,11 +92,10 @@ function saveEdit() {
     .catch(err => console.error('Update error:', err));
 }
 
-// ── Delete game (admin) ───────────────────────────────────────────────────
+// Delete game (admin)
 function deleteGame() {
   if (!currentEditingGameId || !confirm('Are you sure you want to delete this game?')) return;
-  fetch('../scripts/delete_game.php?id=' + currentEditingGameId)
-    .then(r => r.text())
+  fetch('../features/games/delete_game.php?id=' + currentEditingGameId)
     .then(() => {
       bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
       fetchGames();
@@ -111,7 +104,7 @@ function deleteGame() {
     .catch(err => console.error('Delete error:', err));
 }
 
-// ── Add to cart (user) — kept for any legacy usage ────────────────────────
+// Add to cart from modal (legacy)
 function addToCartFromModal() {
   if (!currentEditingGameId) return;
   const formData = new FormData();
@@ -119,13 +112,13 @@ function addToCartFromModal() {
   formData.append('game_id', currentEditingGameId);
   formData.append('quantity', 1);
 
-  fetch('../scripts/cart.php', { method: 'POST', body: formData })
+  fetch('../features/cart/cart.php', { method: 'POST', body: formData })
     .then(r => r.json())
     .then(d => {
       if (d.success) {
         bootstrap.Modal.getInstance(document.getElementById('editGameModal')).hide();
         showToast('Added to cart! 🛒', 'success');
-        fetch('../scripts/cart.php?action=count')
+        fetch('../features/cart/cart.php?action=count')
           .then(r => r.json())
           .then(d => {
             const badge = document.getElementById('cartCountBadge');
@@ -139,7 +132,7 @@ function addToCartFromModal() {
     .catch(() => showToast('Error adding to cart.', 'danger'));
 }
 
-// ── Toast notification ────────────────────────────────────────────────────
+// Toast
 function showToast(msg, type = 'success') {
   let container = document.getElementById('toastContainer');
   if (!container) {

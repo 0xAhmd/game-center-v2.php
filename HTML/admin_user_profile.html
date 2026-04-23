@@ -10,112 +10,20 @@
   <link rel="stylesheet" href="../css/profile.css">
   <link rel="icon" type="image/png" href="../assets/profile.png">
   <style>
-    /* ── Avatar (read-only, no upload) ────────────────────────────── */
-    .profile-avatar-wrap {
-      position: relative;
-      width: 88px;
-      height: 88px;
-      margin: 0 auto 14px;
-    }
-    .profile-avatar {
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      font-weight: 700;
-      color: #fff;
-      font-family: 'Rajdhani', sans-serif;
-      box-shadow: 0 0 30px rgba(108,60,225,0.4);
-      letter-spacing: 1px;
-      overflow: hidden;
-    }
-    .profile-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
-    /* ── Admin viewer banner ───────────────────────────────────────── */
-    .admin-view-banner {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(108,60,225,0.15);
-      border: 1px solid rgba(108,60,225,0.35);
-      border-radius: 12px;
-      padding: 12px 18px;
-      margin-bottom: 28px;
-      font-size: .875rem;
-      color: rgba(255,255,255,.75);
-    }
-    .admin-view-banner .banner-icon { font-size: 1.1rem; }
-    .admin-view-banner a {
-      color: #c4a8ff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .admin-view-banner a:hover { text-decoration: underline; }
-
-    /* ── Danger zone (delete user) ─────────────────────────────────── */
-    .danger-zone {
-      background: rgba(231,76,60,0.08);
-      border: 1px solid rgba(231,76,60,0.25);
-      border-radius: 18px;
-      padding: 24px 28px;
-    }
-    .danger-zone-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #ff9d9d;
-      margin-bottom: 8px;
-      letter-spacing: .3px;
-    }
-    .danger-zone p {
-      font-size: .85rem;
-      color: rgba(255,255,255,.45);
-      margin-bottom: 14px;
-    }
-
-    /* ── Back link ─────────────────────────────────────────────────── */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: rgba(255,255,255,.55);
-      text-decoration: none;
-      font-size: .875rem;
-      margin-bottom: 20px;
-      transition: color .2s;
-    }
-    .back-link:hover { color: #fff; }
-
-    /* ── Role editor inline ────────────────────────────────────────── */
-    .role-editor {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .role-editor select {
-      max-width: 130px;
-      font-size: .82rem !important;
-      padding: 6px 10px !important;
-    }
-    .role-editor button {
-      font-size: .82rem;
-      padding: 6px 14px;
-    }
-    .role-msg {
-      font-size: .75rem;
-      min-height: 16px;
-      margin-top: 6px;
-    }
+    .profile-avatar-wrap { position:relative;width:88px;height:88px;margin:0 auto 14px; }
+    .profile-avatar { width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--gc-purple),var(--gc-purple-2));display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:#fff;font-family:'Rajdhani',sans-serif;box-shadow:0 0 30px rgba(108,60,225,0.4);letter-spacing:1px;overflow:hidden; }
+    .profile-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .admin-view-banner { display:flex;align-items:center;gap:10px;background:rgba(108,60,225,0.15);border:1px solid rgba(108,60,225,0.35);border-radius:12px;padding:12px 18px;margin-bottom:28px;font-size:.875rem;color:rgba(255,255,255,.75); }
+    .admin-view-banner a { color:#c4a8ff;text-decoration:none;font-weight:600; }
+    .danger-zone { background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.25);border-radius:18px;padding:24px 28px; }
+    .danger-zone-title { font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:#ff9d9d;margin-bottom:8px; }
+    .danger-zone p { font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:14px; }
+    .back-link { display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.55);text-decoration:none;font-size:.875rem;margin-bottom:20px;transition:color .2s; }
+    .back-link:hover { color:#fff; }
+    .role-editor { display:flex;align-items:center;gap:10px;margin-top:12px; }
+    .role-editor select { max-width:130px;font-size:.82rem !important;padding:6px 10px !important; }
+    .role-editor button { font-size:.82rem;padding:6px 14px; }
+    .role-msg { font-size:.75rem;min-height:16px;margin-top:6px; }
   </style>
 </head>
 <body>
@@ -143,30 +51,24 @@
     const params   = new URLSearchParams(window.location.search);
     const targetId = parseInt(params.get('id'));
 
-    // ── Guard: admin only ──────────────────────────────────────────────────
-    fetch('../scripts/session_status.php')
+    // ✅ Updated path
+    fetch('../features/auth/session_status.php')
       .then(r => r.json())
       .then(s => {
-        if (!s.logged_in || s.role !== 'admin') {
-          window.location.href = 'login.html';
-          return;
-        }
-        if (!targetId) {
-          window.location.href = 'admin.html';
-          return;
-        }
+        if (!s.logged_in || s.role !== 'admin') { window.location.href = 'login.html'; return; }
+        if (!targetId) { window.location.href = 'admin.html'; return; }
         loadUserProfile();
       });
 
-    // ── Load profile data ──────────────────────────────────────────────────
     function loadUserProfile() {
-      fetch(`../scripts/admin_user_profile.php?user_id=${targetId}`)
+      // ✅ Updated path
+      fetch(`../features/admin/user_profile.php?user_id=${targetId}`)
         .then(r => r.json())
         .then(data => {
           if (data.error) {
             document.getElementById('profileContainer').innerHTML =
               `<div class="alert alert-danger">${escHtml(data.error)}
-               <a href="admin.html" class="alert-link ms-2">← Back to Dashboard</a></div>`;
+               <a href="admin.html" class="alert-link ms-2">← Back</a></div>`;
             return;
           }
           renderProfile(data);
@@ -177,86 +79,57 @@
         });
     }
 
-    // ── Render ─────────────────────────────────────────────────────────────
     function renderProfile(data) {
       const { user, stats, recent_orders } = data;
       const isTargetAdmin = user.role === 'admin';
-      const joined = new Date(user.created_at).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
+      const joined   = new Date(user.created_at).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
       const initials = user.username.slice(0, 2).toUpperCase();
-
       const avatarInner = user.avatar_path
-        ? `<img src="../${escAttr(user.avatar_path)}?v=${Date.now()}" alt="Avatar"
-               onerror="this.parentElement.innerHTML='${initials}'">`
+        ? `<img src="../${escAttr(user.avatar_path)}?v=${Date.now()}" alt="Avatar" onerror="this.parentElement.innerHTML='${initials}'">`
         : initials;
 
-      const statusColors = {
-        pending: 'status-pending', processing: 'status-processing',
-        completed: 'status-completed', cancelled: 'status-cancelled'
-      };
+      const statusColors = { pending:'status-pending', processing:'status-processing', completed:'status-completed', cancelled:'status-cancelled' };
 
-      let recentOrdersHtml = '';
-      if (!recent_orders.length) {
-        recentOrdersHtml = `<p class="text-white-50 text-center py-3">No orders placed yet.</p>`;
-      } else {
-        recentOrdersHtml = recent_orders.map(o => {
-          const date = new Date(o.created_at).toLocaleDateString('en-US',
-            { month: 'short', day: 'numeric', year: 'numeric' });
-          return `
-            <div class="recent-order-row">
-              <div>
-                <span class="text-white fw-bold">#${o.id}</span>
-                <span class="text-white-50 ms-2" style="font-size:.8rem">${date}</span>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <span class="text-white-50" style="font-size:.85rem">
-                  ${o.item_count} game${o.item_count != 1 ? 's' : ''}
-                </span>
-                <span class="text-white fw-bold">$${parseFloat(o.total_price).toFixed(2)}</span>
-                <span class="order-status ${statusColors[o.status] || ''}">${o.status}</span>
-              </div>
-            </div>`;
-        }).join('');
-      }
+      let recentOrdersHtml = recent_orders.length
+        ? recent_orders.map(o => {
+            const date = new Date(o.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+            return `
+              <div class="recent-order-row">
+                <div>
+                  <span class="text-white fw-bold">#${o.id}</span>
+                  <span class="text-white-50 ms-2" style="font-size:.8rem">${date}</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="text-white-50" style="font-size:.85rem">${o.item_count} game${o.item_count != 1 ? 's' : ''}</span>
+                  <span class="text-white fw-bold">$${parseFloat(o.total_price).toFixed(2)}</span>
+                  <span class="order-status ${statusColors[o.status] || ''}">${o.status}</span>
+                </div>
+              </div>`;
+          }).join('')
+        : `<p class="text-white-50 text-center py-3">No orders placed yet.</p>`;
 
       document.title = `${user.username} — Game Center Admin`;
 
       document.getElementById('profileContainer').innerHTML = `
         <a href="admin.html" class="back-link">← Back to Dashboard</a>
-
-        <!-- Admin viewing banner -->
         <div class="admin-view-banner">
-          <span class="banner-icon">👁️</span>
-          <span>You are viewing this profile as an admin.
-            <a href="admin.html">Return to dashboard →</a>
-          </span>
+          <span>👁️</span>
+          <span>You are viewing this profile as an admin. <a href="admin.html">Return to dashboard →</a></span>
         </div>
 
         <div class="profile-layout">
-
-          <!-- ── Left sidebar ─────────────────────────────────────── -->
           <div class="profile-sidebar">
             <div class="profile-card">
-
               <div class="profile-avatar-wrap">
-                <div class="profile-avatar" id="profileAvatarEl">
-                  ${avatarInner}
-                </div>
+                <div class="profile-avatar" id="profileAvatarEl">${avatarInner}</div>
               </div>
-
               ${isTargetAdmin
                 ? '<div class="profile-role-badge">⚙️ Admin</div>'
                 : '<div class="profile-role-badge user-badge">🎮 Player</div>'}
-
               <div class="profile-name">${escHtml(user.username)}</div>
               <div class="profile-email">${escHtml(user.email)}</div>
               <div class="profile-joined">Member since ${joined}</div>
-              <div class="profile-joined" style="margin-top:-6px;margin-bottom:16px">
-                User ID: #${user.id}
-              </div>
-
-              <!-- Role editor -->
+              <div class="profile-joined" style="margin-top:-6px;margin-bottom:16px">User ID: #${user.id}</div>
               <div class="role-editor">
                 <select id="roleSelect" class="form-select">
                   <option value="user"  ${user.role === 'user'  ? 'selected' : ''}>User</option>
@@ -267,67 +140,44 @@
               <div class="role-msg" id="roleMsg"></div>
             </div>
 
-            <!-- Stats card -->
             <div class="stats-mini-card">
-              <div class="stats-mini-row">
-                <span class="stats-mini-label">Total Orders</span>
-                <span class="stats-mini-val">${stats.total_orders}</span>
-              </div>
-              <div class="stats-mini-row">
-                <span class="stats-mini-label">Completed</span>
-                <span class="stats-mini-val" style="color:#28a865">${stats.completed_orders}</span>
-              </div>
-              <div class="stats-mini-row">
-                <span class="stats-mini-label">Pending</span>
-                <span class="stats-mini-val" style="color:#ffc107">${stats.pending_orders}</span>
-              </div>
-              <div class="stats-mini-row"
-                   style="border-top:1px solid rgba(255,255,255,.08);margin-top:8px;padding-top:12px">
+              <div class="stats-mini-row"><span class="stats-mini-label">Total Orders</span><span class="stats-mini-val">${stats.total_orders}</span></div>
+              <div class="stats-mini-row"><span class="stats-mini-label">Completed</span><span class="stats-mini-val" style="color:#28a865">${stats.completed_orders}</span></div>
+              <div class="stats-mini-row"><span class="stats-mini-label">Pending</span><span class="stats-mini-val" style="color:#ffc107">${stats.pending_orders}</span></div>
+              <div class="stats-mini-row" style="border-top:1px solid rgba(255,255,255,.08);margin-top:8px;padding-top:12px">
                 <span class="stats-mini-label">Total Spent</span>
-                <span class="stats-mini-val" style="color:var(--gc-cyan)">
-                  $${parseFloat(stats.total_spent).toFixed(2)}
-                </span>
+                <span class="stats-mini-val" style="color:var(--gc-cyan)">$${parseFloat(stats.total_spent).toFixed(2)}</span>
               </div>
             </div>
           </div>
 
-          <!-- ── Main content ──────────────────────────────────────── -->
           <div class="profile-main">
-
-            <!-- Order history -->
             <div class="profile-section">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="profile-section-title mb-0">📦 Order History</h5>
                 <a href="orders.html" class="btn btn-sm btn-outline-light">All Orders</a>
               </div>
-              <div class="recent-orders-list">
-                ${recentOrdersHtml}
-              </div>
+              <div class="recent-orders-list">${recentOrdersHtml}</div>
             </div>
-
-            <!-- Danger zone -->
             <div class="danger-zone">
               <div class="danger-zone-title">⚠️ Danger Zone</div>
-              <p>Permanently delete this user account and all associated data. This action cannot be undone.</p>
-              <button class="btn btn-danger btn-sm px-4" onclick="deleteUser(${user.id})">
-                🗑️ Delete User Account
-              </button>
+              <p>Permanently delete this user account and all associated data. This cannot be undone.</p>
+              <button class="btn btn-danger btn-sm px-4" onclick="deleteUser(${user.id})">🗑️ Delete User Account</button>
             </div>
-
           </div>
         </div>`;
     }
 
-    // ── Update role ────────────────────────────────────────────────────────
     function updateRole() {
-      const role   = document.getElementById('roleSelect').value;
-      const msgEl  = document.getElementById('roleMsg');
+      const role  = document.getElementById('roleSelect').value;
+      const msgEl = document.getElementById('roleMsg');
       const fd = new FormData();
       fd.append('action', 'update_role');
       fd.append('user_id', targetId);
       fd.append('role', role);
 
-      fetch('../scripts/users.php', { method: 'POST', body: fd })
+      // ✅ Updated path
+      fetch('../features/admin/users.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {
           if (d.success) {
@@ -337,36 +187,27 @@
             msgEl.innerHTML = `<span style="color:#ff9d9d">⚠️ ${escHtml(d.error)}</span>`;
           }
         })
-        .catch(() => {
-          msgEl.innerHTML = `<span style="color:#ff9d9d">Request failed.</span>`;
-        });
+        .catch(() => { msgEl.innerHTML = `<span style="color:#ff9d9d">Request failed.</span>`; });
     }
 
-    // ── Delete user ────────────────────────────────────────────────────────
     function deleteUser(userId) {
       if (!confirm('Delete this user? This will remove all their data and cannot be undone.')) return;
       const fd = new FormData();
       fd.append('action', 'delete');
       fd.append('user_id', userId);
 
-      fetch('../scripts/users.php', { method: 'POST', body: fd })
+      // ✅ Updated path
+      fetch('../features/admin/users.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {
-          if (d.success) {
-            window.location.href = 'admin.html';
-          } else {
-            alert(d.error || 'Failed to delete user.');
-          }
+          if (d.success) window.location.href = 'admin.html';
+          else alert(d.error || 'Failed to delete user.');
         })
         .catch(() => alert('Request failed.'));
     }
 
-    function escHtml(s) {
-      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-    function escAttr(s) {
-      return String(s ?? '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-    }
+    function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function escAttr(s) { return String(s??'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   </script>
 </body>
 </html>

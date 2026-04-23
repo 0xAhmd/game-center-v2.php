@@ -1,8 +1,8 @@
 // JS/auth_ui.js — Injects navbar links based on session state
-// Included on every page
+// All API calls now point to features/ folder
 
 (function () {
-  fetch('../scripts/session_status.php')
+  fetch('../features/auth/session_status.php')
     .then(r => r.json())
     .then(renderNav)
     .catch(() => renderNav({ logged_in: false }));
@@ -13,7 +13,6 @@
 
     window.__session = s;
 
-    // Builds a fixed 32x32 avatar circle with either an image or initials
     function navAvatar(username, avatarPath) {
       const initials = escHtml(username.slice(0, 2).toUpperCase());
       if (avatarPath) {
@@ -45,16 +44,14 @@
         <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
           ${navAvatar(s.username, s.avatar_path)}
         </a>
-        <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
+        <a href="../features/auth/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
       const addBtn = document.getElementById('addGameBtn');
       if (addBtn) addBtn.style.display = 'block';
     } else {
       nav.innerHTML = `
         <a href="../HTML/index.html" class="gc-nav-link">Store</a>
-        <a href="../HTML/library.html" class="gc-nav-link gc-nav-library">
-          Library
-        </a>
+        <a href="../HTML/library.html" class="gc-nav-link gc-nav-library">Library</a>
         <a href="../HTML/cart.html" class="gc-nav-link gc-nav-cart">
           🛒 Cart <span id="cartCountBadge" class="cart-badge"></span>
         </a>
@@ -62,9 +59,9 @@
         <a href="../HTML/profile.html" class="gc-nav-link gc-nav-profile-link">
           ${navAvatar(s.username, s.avatar_path)}
         </a>
-        <a href="../scripts/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
+        <a href="../features/auth/logout.php" class="gc-nav-link gc-nav-link-danger">Logout</a>
       `;
-      fetch('../scripts/cart.php?action=count')
+      fetch('../features/cart/cart.php?action=count')
         .then(r => r.json())
         .then(d => {
           const count = parseInt(d.total) || 0;

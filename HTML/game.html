@@ -9,167 +9,30 @@
   <link rel="stylesheet" href="../css/store.css">
   <link rel="icon" type="image/png" href="../assets/profile.png">
   <style>
-    .game-detail-hero {
-      position: relative;
-      width: 100%;
-      min-height: 340px;
-      overflow: hidden;
-      border-radius: 20px;
-      margin-bottom: 28px;
-    }
-    .game-detail-hero img {
-      width: 100%;
-      height: 340px;
-      object-fit: cover;
-      display: block;
-      border-radius: 20px;
-    }
-    .game-detail-hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(10,10,25,0.92) 0%, rgba(10,10,25,0.3) 60%, transparent 100%);
-      border-radius: 20px;
-    }
-    .game-detail-hero-content {
-      position: absolute;
-      bottom: 28px;
-      left: 28px;
-      right: 28px;
-    }
-    .game-detail-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 700;
-      color: #fff;
-      margin: 0 0 8px;
-      text-shadow: 0 2px 12px rgba(0,0,0,.6);
-      line-height: 1.1;
-    }
-    .game-detail-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .game-detail-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 18px;
-      padding: 28px;
-      margin-bottom: 20px;
-    }
-    .game-detail-desc {
-      color: rgba(255,255,255,.75);
-      font-size: .97rem;
-      line-height: 1.75;
-      margin: 0;
-    }
-    .game-buy-card {
-      background: rgba(108,60,225,0.1);
-      border: 1px solid rgba(108,60,225,0.3);
-      border-radius: 18px;
-      padding: 28px;
-      position: sticky;
-      top: 80px;
-    }
-    .game-buy-price {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .game-buy-price.free {
-      background: linear-gradient(135deg, #00d4ff, #6c3ce1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .game-buy-label {
-      color: rgba(255,255,255,.45);
-      font-size: .8rem;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 20px;
-    }
-    .btn-add-cart {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-2));
-      border: none;
-      border-radius: 12px;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .25s;
-      letter-spacing: .3px;
-    }
-    .btn-add-cart:hover {
-      opacity: .9;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(108,60,225,.5);
-    }
-    .btn-add-cart:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .btn-add-cart.added {
-      background: linear-gradient(135deg, #1a7a4a, #28a865);
-    }
-    /* Owned / in-cart status blocks */
-    .game-status-block {
-      width: 100%;
-      padding: 13px 16px;
-      border-radius: 12px;
-      font-size: .95rem;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: .3px;
-    }
-    .game-status-owned {
-      background: rgba(40,168,101,.15);
-      border: 1px solid rgba(40,168,101,.35);
-      color: #7effc2;
-    }
-    .game-status-incart {
-      background: rgba(0,212,255,.12);
-      border: 1px solid rgba(0,212,255,.3);
-      color: #7ee8ff;
-    }
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: rgba(255,255,255,.55);
-      text-decoration: none;
-      font-size: .875rem;
-      margin-bottom: 24px;
-      transition: color .2s;
-    }
-    .back-link:hover { color: #fff; }
-    .login-prompt {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      font-size: .875rem;
-      color: rgba(255,255,255,.6);
-    }
-    .login-prompt a { color: #9b5de5; font-weight: 600; text-decoration: none; }
-    .login-prompt a:hover { text-decoration: underline; }
-    #gameDetailSkeleton .skeleton-line {
-      background: rgba(255,255,255,0.07);
-      border-radius: 8px;
-      animation: shimmer 1.4s infinite;
-    }
-    @keyframes shimmer {
-      0%,100% { opacity:.5 } 50% { opacity:1 }
-    }
+    .game-detail-hero { position:relative;width:100%;min-height:340px;overflow:hidden;border-radius:20px;margin-bottom:28px; }
+    .game-detail-hero img { width:100%;height:340px;object-fit:cover;display:block;border-radius:20px; }
+    .game-detail-hero-overlay { position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,25,0.92) 0%,rgba(10,10,25,0.3) 60%,transparent 100%);border-radius:20px; }
+    .game-detail-hero-content { position:absolute;bottom:28px;left:28px;right:28px; }
+    .game-detail-title { font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:#fff;margin:0 0 8px;text-shadow:0 2px 12px rgba(0,0,0,.6);line-height:1.1; }
+    .game-detail-meta { display:flex;align-items:center;gap:12px;flex-wrap:wrap; }
+    .game-detail-card { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:18px;padding:28px;margin-bottom:20px; }
+    .game-detail-desc { color:rgba(255,255,255,.75);font-size:.97rem;line-height:1.75;margin:0; }
+    .game-buy-card { background:rgba(108,60,225,0.1);border:1px solid rgba(108,60,225,0.3);border-radius:18px;padding:28px;position:sticky;top:80px; }
+    .game-buy-price { font-family:'Rajdhani',sans-serif;font-size:2.4rem;font-weight:700;color:#fff;line-height:1;margin-bottom:6px; }
+    .game-buy-price.free { background:linear-gradient(135deg,#00d4ff,#6c3ce1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .game-buy-label { color:rgba(255,255,255,.45);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:20px; }
+    .btn-add-cart { width:100%;padding:14px;background:linear-gradient(135deg,var(--gc-purple),var(--gc-purple-2));border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;letter-spacing:.3px; }
+    .btn-add-cart:hover { opacity:.9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,60,225,.5); }
+    .btn-add-cart:disabled { opacity:.6;cursor:not-allowed;transform:none;box-shadow:none; }
+    .game-status-block { width:100%;padding:13px 16px;border-radius:12px;font-size:.95rem;font-weight:700;text-align:center;letter-spacing:.3px; }
+    .game-status-owned { background:rgba(40,168,101,.15);border:1px solid rgba(40,168,101,.35);color:#7effc2; }
+    .game-status-incart { background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);color:#7ee8ff; }
+    .back-link { display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.55);text-decoration:none;font-size:.875rem;margin-bottom:24px;transition:color .2s; }
+    .back-link:hover { color:#fff; }
+    .login-prompt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;font-size:.875rem;color:rgba(255,255,255,.6); }
+    .login-prompt a { color:#9b5de5;font-weight:600;text-decoration:none; }
+    #gameDetailSkeleton .skeleton-line { background:rgba(255,255,255,0.07);border-radius:8px;animation:shimmer 1.4s infinite; }
+    @keyframes shimmer { 0%,100%{opacity:.5} 50%{opacity:1} }
   </style>
 </head>
 <body>
@@ -185,7 +48,6 @@
   </nav>
 
   <div class="container py-4" id="gameDetailContainer">
-    <!-- Skeleton -->
     <div id="gameDetailSkeleton">
       <div class="skeleton-line mb-3" style="width:80px;height:18px"></div>
       <div class="skeleton-line mb-4" style="width:100%;height:340px;border-radius:20px"></div>
@@ -193,7 +55,6 @@
         <div class="col-md-8">
           <div class="skeleton-line mb-3" style="width:60%;height:28px"></div>
           <div class="skeleton-line mb-2" style="width:100%;height:14px"></div>
-          <div class="skeleton-line mb-2" style="width:95%;height:14px"></div>
           <div class="skeleton-line" style="width:80%;height:14px"></div>
         </div>
         <div class="col-md-4">
@@ -206,34 +67,28 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../JS/auth_ui.js"></script>
   <script>
-    const params  = new URLSearchParams(window.location.search);
-    const gameId  = parseInt(params.get('id'));
-    let   session = null;
+    const params = new URLSearchParams(window.location.search);
+    const gameId = parseInt(params.get('id'));
+    let session  = null;
 
-    if (!gameId) {
-      window.location.href = 'index.html';
-    }
+    if (!gameId) window.location.href = 'index.html';
 
-    // Called by auth_ui.js once session is ready
     function onSessionReady(s) {
       session = s;
-      if (s.role === 'admin') {
-        window.location.href = 'index.html';
-        return;
-      }
+      if (s.role === 'admin') { window.location.href = 'index.html'; return; }
       loadGame();
     }
 
     function loadGame() {
       const isUser = session && session.logged_in && session.role !== 'admin';
 
-      // Fetch games + (if logged in) owned IDs and cart IDs in parallel
-      const gamesP  = fetch('../scripts/get_games.php').then(r => r.json());
-      const ownedP  = isUser
-        ? fetch('../scripts/get_library_ids.php').then(r => r.json()).catch(() => [])
+      // ✅ Updated fetch paths
+      const gamesP = fetch('../features/games/get_games.php').then(r => r.json());
+      const ownedP = isUser
+        ? fetch('../features/profile/get_library_ids.php').then(r => r.json()).catch(() => [])
         : Promise.resolve([]);
-      const cartP   = isUser
-        ? fetch('../scripts/get_cart_ids.php').then(r => r.json()).catch(() => [])
+      const cartP  = isUser
+        ? fetch('../features/cart/get_cart_ids.php').then(r => r.json()).catch(() => [])
         : Promise.resolve([]);
 
       Promise.all([gamesP, ownedP, cartP])
@@ -244,9 +99,7 @@
               `<div class="alert alert-danger">Game not found. <a href="index.html">Back to store</a></div>`;
             return;
           }
-          const ownedSet = new Set(ownedIds.map(Number));
-          const cartSet  = new Set(cartIds.map(Number));
-          renderGame(game, ownedSet, cartSet);
+          renderGame(game, new Set(ownedIds.map(Number)), new Set(cartIds.map(Number)));
         })
         .catch(() => {
           document.getElementById('gameDetailContainer').innerHTML =
@@ -262,54 +115,36 @@
       const isOwned = ownedSet.has(parseInt(game.id));
       const inCart  = cartSet.has(parseInt(game.id));
 
+      const priceHtml = `
+        <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
+        <div class="game-buy-label">${isFree ? 'No purchase required' : 'One-time purchase'}</div>`;
+
       let buySection = '';
-
       if (isUser) {
-        const priceHtml = `
-          <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
-          <div class="game-buy-label">${isFree ? 'No purchase required' : 'One-time purchase'}</div>`;
-
         if (isOwned) {
-          // Already in library — purchased and completed
           buySection = priceHtml + `
-            <div class="game-status-block game-status-owned">
-              ✅ Already in your Library
-            </div>
-            <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
-              You already own this game
-            </div>`;
+            <div class="game-status-block game-status-owned">✅ Already in your Library</div>
+            <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">You already own this game</div>`;
         } else if (inCart) {
-          // Sitting in cart, not yet purchased
           buySection = priceHtml + `
-            <div class="game-status-block game-status-incart">
-              🛒 Already in your Cart
-            </div>
+            <div class="game-status-block game-status-incart">🛒 Already in your Cart</div>
             <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
               <a href="cart.html" style="color:rgba(0,212,255,.8);text-decoration:none">Go to cart →</a>
             </div>`;
         } else {
-          // Available to add
           buySection = priceHtml + `
-            <button class="btn-add-cart" id="addCartBtn" onclick="addToCart(${game.id})">
-              🛒 Add to Cart
-            </button>`;
+            <button class="btn-add-cart" id="addCartBtn" onclick="addToCart(${game.id})">🛒 Add to Cart</button>`;
         }
       } else {
-        // Guest — show price and login prompt
         buySection = `
-          <div class="game-buy-price ${isFree ? 'free' : ''}">${isFree ? 'Free' : '$' + price.toFixed(2)}</div>
-          <div class="game-buy-label mb-3">${isFree ? 'No purchase required' : 'One-time purchase'}</div>
-          <div class="login-prompt">
-            <a href="login.html">Sign in</a> to purchase this game
-          </div>`;
+          ${priceHtml}
+          <div class="login-prompt"><a href="login.html">Sign in</a> to purchase this game</div>`;
       }
 
       document.getElementById('gameDetailContainer').innerHTML = `
         <a href="index.html" class="back-link">← Back to Store</a>
-
         <div class="game-detail-hero">
-          <img src="${escAttr(imgSrc)}" alt="${escAttr(game.title)}"
-               onerror="this.src='../assets/profile.png'">
+          <img src="${escAttr(imgSrc)}" alt="${escAttr(game.title)}" onerror="this.src='../assets/profile.png'">
           <div class="game-detail-hero-overlay"></div>
           <div class="game-detail-hero-content">
             <h1 class="game-detail-title">${escHtml(game.title)}</h1>
@@ -318,20 +153,15 @@
             </div>
           </div>
         </div>
-
         <div class="row g-4 align-items-start">
           <div class="col-md-8">
             <div class="game-detail-card">
-              <h5 class="text-white fw-bold mb-3" style="font-family:'Rajdhani',sans-serif;letter-spacing:.3px">
-                📖 About This Game
-              </h5>
+              <h5 class="text-white fw-bold mb-3" style="font-family:'Rajdhani',sans-serif">📖 About This Game</h5>
               <p class="game-detail-desc">${escHtml(game.description || 'No description available.')}</p>
             </div>
           </div>
           <div class="col-md-4">
-            <div class="game-buy-card">
-              ${buySection}
-            </div>
+            <div class="game-buy-card">${buySection}</div>
           </div>
         </div>`;
 
@@ -349,25 +179,22 @@
       fd.append('game_id', gameId);
       fd.append('quantity', 1);
 
-      fetch('../scripts/cart.php', { method: 'POST', body: fd })
+      // ✅ Updated path
+      fetch('../features/cart/cart.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(d => {
           if (d.success) {
-            // Swap button to "in cart" state — no re-adding allowed
             const buyCard = btn.closest('.game-buy-card');
             btn.remove();
-            const statusDiv = document.createElement('div');
-            statusDiv.innerHTML = `
-              <div class="game-status-block game-status-incart">
-                🛒 Added to Cart
-              </div>
+            const div = document.createElement('div');
+            div.innerHTML = `
+              <div class="game-status-block game-status-incart">🛒 Added to Cart</div>
               <div class="mt-2 text-center" style="font-size:.78rem;color:rgba(255,255,255,.35)">
                 <a href="cart.html" style="color:rgba(0,212,255,.8);text-decoration:none">Go to cart →</a>
               </div>`;
-            buyCard.appendChild(statusDiv);
-
+            buyCard.appendChild(div);
             // Update navbar badge
-            fetch('../scripts/cart.php?action=count')
+            fetch('../features/cart/cart.php?action=count')
               .then(r => r.json())
               .then(d => {
                 const badge = document.getElementById('cartCountBadge');

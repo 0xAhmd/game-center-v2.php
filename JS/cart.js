@@ -1,10 +1,10 @@
 // JS/cart.js — Cart page logic
+// Updated to use features/ paths
 
 let cartData = [];
 let currentOrderTotal = 0;
 
-// ── Guard: require login ──────────────────────────────────────────────────
-fetch('../scripts/session_status.php')
+fetch('../features/auth/session_status.php')
   .then(r => r.json())
   .then(s => {
     if (!s.logged_in) { window.location.href = 'login.html'; return; }
@@ -12,12 +12,9 @@ fetch('../scripts/session_status.php')
   });
 
 function loadCart() {
-  fetch('../scripts/cart.php?action=get')
+  fetch('../features/cart/cart.php?action=get')
     .then(r => r.json())
-    .then(data => {
-      cartData = data;
-      renderCart(data);
-    })
+    .then(data => { cartData = data; renderCart(data); })
     .catch(() => {
       document.getElementById('cartContainer').innerHTML =
         `<div class="alert alert-danger">Failed to load cart.</div>`;
@@ -45,7 +42,7 @@ function renderCart(items) {
     const price    = parseFloat(item.price);
     const subtotal = price * item.quantity;
     total += subtotal;
-    const imgSrc   = item.image_path ? '../' + item.image_path : item.image_url;
+    const imgSrc = item.image_path ? '../' + item.image_path : item.image_url;
 
     rows += `
 <div class="cart-item" id="cartItem_${item.id}">
@@ -81,9 +78,7 @@ function renderCart(items) {
         <span class="price-badge fs-5">$${total.toFixed(2)}</span>
       </div>
       <div class="mt-3 d-flex gap-2">
-        <button class="btn btn-success flex-grow-1" onclick="openCheckout()">
-          ✅ Checkout
-        </button>
+        <button class="btn btn-success flex-grow-1" onclick="openCheckout()">✅ Checkout</button>
         <button class="btn btn-outline-danger" onclick="clearCart()">Clear Cart</button>
       </div>
     </div>`;
@@ -94,27 +89,21 @@ function changeQty(cartId, newQty) {
   fd.append('action', 'update');
   fd.append('cart_id', cartId);
   fd.append('quantity', newQty);
-  fetch('../scripts/cart.php', { method: 'POST', body: fd })
-    .then(r => r.json())
-    .then(() => loadCart());
+  fetch('../features/cart/cart.php', { method: 'POST', body: fd }).then(() => loadCart());
 }
 
 function removeItem(cartId) {
   const fd = new FormData();
   fd.append('action', 'remove');
   fd.append('cart_id', cartId);
-  fetch('../scripts/cart.php', { method: 'POST', body: fd })
-    .then(r => r.json())
-    .then(() => loadCart());
+  fetch('../features/cart/cart.php', { method: 'POST', body: fd }).then(() => loadCart());
 }
 
 function clearCart() {
   if (!confirm('Clear entire cart?')) return;
   const fd = new FormData();
   fd.append('action', 'clear');
-  fetch('../scripts/cart.php', { method: 'POST', body: fd })
-    .then(r => r.json())
-    .then(() => loadCart());
+  fetch('../features/cart/cart.php', { method: 'POST', body: fd }).then(() => loadCart());
 }
 
 function openCheckout() {
@@ -125,7 +114,7 @@ function openCheckout() {
 function confirmCheckout() {
   const fd = new FormData();
   fd.append('action', 'checkout');
-  fetch('../scripts/orders.php', { method: 'POST', body: fd })
+  fetch('../features/orders/orders.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(d => {
       bootstrap.Modal.getInstance(document.getElementById('checkoutModal')).hide();

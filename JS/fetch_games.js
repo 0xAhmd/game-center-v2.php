@@ -1,7 +1,4 @@
-// JS/fetch_games.js
-// Fetches games + user library IDs (games owned via completed purchases), renders cards.
-// The "Add to Library" button has been removed — games are added automatically
-// when an admin marks an order as completed.
+// JS/fetch_games.js — updated to use features/ paths
 
 let _ownedGameIds = new Set();
 
@@ -9,9 +6,9 @@ function fetchGames() {
   const session = window.__session || {};
   const isUser  = session.logged_in && session.role !== 'admin';
 
-  const gamesPromise = fetch('../scripts/get_games.php').then(r => r.json());
+  const gamesPromise = fetch('../features/games/get_games.php').then(r => r.json());
   const ownedPromise = isUser
-    ? fetch('../scripts/get_library_ids.php').then(r => r.json()).catch(() => [])
+    ? fetch('../features/profile/get_library_ids.php').then(r => r.json()).catch(() => [])
     : Promise.resolve([]);
 
   Promise.all([gamesPromise, ownedPromise])
@@ -30,10 +27,7 @@ function fetchGames() {
         const price   = parseFloat(game.price) === 0 ? 'Free' : `$${parseFloat(game.price).toFixed(2)}`;
         const isOwned = _ownedGameIds.has(parseInt(game.id));
 
-        // Show "In Library" badge only — no direct add button
-        const ownedBadge = isOwned
-          ? `<span class="owned-store-badge">✓ In Library</span>`
-          : '';
+        const ownedBadge = isOwned ? `<span class="owned-store-badge">✓ In Library</span>` : '';
 
         const card = `
 <div class="col-md-4 col-sm-6 game-card" data-game-id="${game.id}">
@@ -51,9 +45,7 @@ function fetchGames() {
       </p>
       <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
         <span class="price-badge">${price}</span>
-        ${isUser && isOwned
-          ? `<span class="btn-lib-card owned" style="cursor:default">✓ Owned</span>`
-          : ''}
+        ${isUser && isOwned ? `<span class="btn-lib-card owned" style="cursor:default">✓ Owned</span>` : ''}
       </div>
     </div>
   </div>
@@ -66,27 +58,6 @@ function fetchGames() {
       document.getElementById('game-cards-container').innerHTML =
         `<div class="col-12 text-center text-white py-5"><p>Failed to load games.</p></div>`;
     });
-}
-
-function showFetchToast(msg, type = 'success') {
-  if (typeof showToast === 'function') {
-    showToast(msg, type);
-  } else {
-    let container = document.getElementById('toastContainer');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'toastContainer';
-      container.style.cssText =
-        'position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px';
-      document.body.appendChild(container);
-    }
-    const t = document.createElement('div');
-    t.className = `toast-notification toast-${type}`;
-    t.textContent = msg;
-    container.appendChild(t);
-    setTimeout(() => t.classList.add('toast-visible'), 10);
-    setTimeout(() => { t.classList.remove('toast-visible'); setTimeout(() => t.remove(), 400); }, 3000);
-  }
 }
 
 function escHtml(str) {

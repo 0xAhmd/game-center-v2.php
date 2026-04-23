@@ -1,9 +1,10 @@
 // JS/orders.js — Orders page
+// Updated to use features/ paths
 
 let currentOrderId = null;
 let isAdminView    = false;
 
-fetch('../scripts/session_status.php')
+fetch('../features/auth/session_status.php')
   .then(r => r.json())
   .then(s => {
     if (!s.logged_in) { window.location.href = 'login.html'; return; }
@@ -17,8 +18,8 @@ fetch('../scripts/session_status.php')
 
 function loadOrders(asAdmin) {
   const url = asAdmin
-    ? '../scripts/orders.php?action=all'
-    : '../scripts/orders.php?action=my_orders';
+    ? '../features/orders/orders.php?action=all'
+    : '../features/orders/orders.php?action=my_orders';
 
   fetch(url)
     .then(r => r.json())
@@ -50,23 +51,14 @@ function renderOrders(orders, asAdmin) {
   };
 
   let html = `<div class="orders-table-wrap"><table class="orders-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        ${asAdmin ? '<th>Customer</th>' : ''}
-        <th>Date</th>
-        <th>Items</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>`;
+    <thead><tr>
+      <th>#</th>
+      ${asAdmin ? '<th>Customer</th>' : ''}
+      <th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th>
+    </tr></thead><tbody>`;
 
   orders.forEach(o => {
-    const date = new Date(o.created_at).toLocaleDateString('en-US', {
-      year: 'numeric', month: 'short', day: 'numeric'
-    });
+    const date = new Date(o.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
     html += `<tr>
       <td class="text-white-50">#${o.id}</td>
       ${asAdmin ? `<td class="text-white">${escHtml(o.username)}<br><small class="text-white-50">${escHtml(o.email)}</small></td>` : ''}
@@ -86,14 +78,11 @@ function viewOrderDetail(orderId, currentStatus) {
   currentOrderId = orderId;
   const body = document.getElementById('orderDetailBody');
   body.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-light"></div></div>';
-
-  // Set status selector (admin)
   const sel = document.getElementById('statusSelect');
   if (sel) sel.value = currentStatus;
-
   new bootstrap.Modal(document.getElementById('orderDetailModal')).show();
 
-  fetch(`../scripts/orders.php?action=detail&order_id=${orderId}`)
+  fetch(`../features/orders/orders.php?action=detail&order_id=${orderId}`)
     .then(r => r.json())
     .then(items => {
       if (!items.length) { body.innerHTML = '<p class="text-white-50">No items found.</p>'; return; }
@@ -111,8 +100,7 @@ function viewOrderDetail(orderId, currentStatus) {
             <div class="text-white fw-bold">$${(item.quantity * item.price).toFixed(2)}</div>
           </div>`;
       });
-      html += '</div>';
-      body.innerHTML = html;
+      body.innerHTML = html + '</div>';
     });
 }
 
@@ -123,8 +111,7 @@ function updateOrderStatus() {
   fd.append('action', 'update_status');
   fd.append('order_id', currentOrderId);
   fd.append('status', status);
-
-  fetch('../scripts/orders.php', { method: 'POST', body: fd })
+  fetch('../features/orders/orders.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(d => {
       if (d.success) {

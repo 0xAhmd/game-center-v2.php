@@ -1,14 +1,13 @@
 <?php
-// scripts/logout.php
-require_once 'auth.php';
+// features/auth/logout.php
+require_once '../shared/auth_helpers.php';
 
 $_SESSION = [];
 session_destroy();
 
-// Clear remember-me cookie
 if (isset($_COOKIE['remember_token'])) {
     setcookie('remember_token', '', time() - 3600, '/');
 }
 
-header('Location: ../HTML/login.html');
+header('Location: ../../HTML/login.html');
 exit;

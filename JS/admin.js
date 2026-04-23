@@ -1,9 +1,9 @@
 // JS/admin.js — Admin dashboard
+// Updated to use features/ paths
 
 let currentOrderId = null;
 
-// ── Auth guard ────────────────────────────────────────────────────────────
-fetch('../scripts/session_status.php')
+fetch('../features/auth/session_status.php')
   .then(r => r.json())
   .then(s => {
     if (!s.logged_in || s.role !== 'admin') {
@@ -14,24 +14,21 @@ fetch('../scripts/session_status.php')
     loadAdminOrders();
   });
 
-// ── Stats ─────────────────────────────────────────────────────────────────
 function loadStats() {
   Promise.all([
-    fetch('../scripts/get_games.php').then(r => r.json()),
-    fetch('../scripts/users.php?action=list').then(r => r.json()),
-    fetch('../scripts/orders.php?action=all').then(r => r.json()),
+    fetch('../features/games/get_games.php').then(r => r.json()),
+    fetch('../features/admin/users.php?action=list').then(r => r.json()),
+    fetch('../features/orders/orders.php?action=all').then(r => r.json()),
   ]).then(([games, users, orders]) => {
-    document.getElementById('statGames').textContent   = Array.isArray(games)  ? games.length  : '—';
-    document.getElementById('statUsers').textContent   = Array.isArray(users)  ? users.length  : '—';
-    document.getElementById('statOrders').textContent  = Array.isArray(orders) ? orders.length : '—';
+    document.getElementById('statGames').textContent  = Array.isArray(games)  ? games.length  : '—';
+    document.getElementById('statUsers').textContent  = Array.isArray(users)  ? users.length  : '—';
+    document.getElementById('statOrders').textContent = Array.isArray(orders) ? orders.length : '—';
     const revenue = Array.isArray(orders)
-      ? orders.reduce((sum, o) => sum + parseFloat(o.total_price || 0), 0)
-      : 0;
+      ? orders.reduce((sum, o) => sum + parseFloat(o.total_price || 0), 0) : 0;
     document.getElementById('statRevenue').textContent = '$' + revenue.toFixed(2);
   }).catch(err => console.error('Stats error:', err));
 }
 
-// ── Tabs ──────────────────────────────────────────────────────────────────
 function showTab(tab) {
   ['orders', 'users'].forEach(t => {
     document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
@@ -42,9 +39,8 @@ function showTab(tab) {
   if (tab === 'users') loadAdminUsers();
 }
 
-// ── Orders ────────────────────────────────────────────────────────────────
 function loadAdminOrders() {
-  fetch('../scripts/orders.php?action=all')
+  fetch('../features/orders/orders.php?action=all')
     .then(r => r.json())
     .then(renderAdminOrders)
     .catch(() => {
@@ -61,20 +57,15 @@ function renderAdminOrders(orders) {
   let html = `<div class="orders-table-wrap"><table class="orders-table">
     <thead><tr><th>#</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>`;
   orders.forEach(o => {
-    const date = new Date(o.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-    const avatarHtml = o.avatar_path
-      ? `<img src="../${escAttr(o.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
-    const initialsHtml = `<span class="user-mini-initials" ${o.avatar_path ? 'style="display:none"' : ''}>${escHtml((o.username||'?').slice(0,2).toUpperCase())}</span>`;
+    const date = new Date(o.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+    const avatarHtml    = o.avatar_path ? `<img src="../${escAttr(o.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
+    const initialsHtml  = `<span class="user-mini-initials" ${o.avatar_path ? 'style="display:none"' : ''}>${escHtml((o.username||'?').slice(0,2).toUpperCase())}</span>`;
     html += `<tr>
       <td class="text-white-50">#${o.id}</td>
       <td class="text-white">
         <div class="user-cell">
           <div class="user-mini-avatar-wrap">${avatarHtml}${initialsHtml}</div>
-          <div>
-            <div>${escHtml(o.username)}</div>
-            <small class="text-white-50">${escHtml(o.email)}</small>
-          </div>
+          <div><div>${escHtml(o.username)}</div><small class="text-white-50">${escHtml(o.email)}</small></div>
         </div>
       </td>
       <td class="text-white-50">${date}</td>
@@ -88,9 +79,8 @@ function renderAdminOrders(orders) {
   c.innerHTML = html;
 }
 
-// ── Users ─────────────────────────────────────────────────────────────────
 function loadAdminUsers() {
-  fetch('../scripts/users.php?action=list')
+  fetch('../features/admin/users.php?action=list')
     .then(r => r.json())
     .then(renderAdminUsers)
     .catch(() => {
@@ -107,23 +97,18 @@ function renderAdminUsers(users) {
     <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead><tbody>`;
 
   users.forEach(u => {
-    const date = new Date(u.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
-    const avatarHtml = u.avatar_path
-      ? `<img src="../${escAttr(u.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
+    const date = new Date(u.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+    const avatarHtml   = u.avatar_path ? `<img src="../${escAttr(u.avatar_path)}" class="user-mini-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
     const initialsHtml = `<span class="user-mini-initials" ${u.avatar_path ? 'style="display:none"' : ''}>${escHtml((u.username||'?').slice(0,2).toUpperCase())}</span>`;
-    const roleBadge = u.role === 'admin'
+    const roleBadge    = u.role === 'admin'
       ? `<span class="role-badge role-admin">⚙️ Admin</span>`
       : `<span class="role-badge role-user">🎮 User</span>`;
 
-    html += `<tr class="user-row-clickable" onclick="goToUserProfile(${u.id})" title="View ${escAttr(u.username)}'s profile" style="cursor:pointer">
+    html += `<tr class="user-row-clickable" onclick="goToUserProfile(${u.id})" style="cursor:pointer">
       <td>
         <div class="user-cell">
           <div class="user-mini-avatar-wrap">${avatarHtml}${initialsHtml}</div>
-          <div>
-            <div class="text-white fw-bold">${escHtml(u.username)}</div>
-            <small class="text-white-50">ID #${u.id}</small>
-          </div>
+          <div><div class="text-white fw-bold">${escHtml(u.username)}</div><small class="text-white-50">ID #${u.id}</small></div>
         </div>
       </td>
       <td class="text-white-50">${escHtml(u.email)}</td>
@@ -148,31 +133,17 @@ function renderAdminUsers(users) {
 
   html += '</tbody></table></div>';
   c.innerHTML = html;
-
-  // Add hover styles for clickable rows
   injectRowHoverStyle();
 }
 
-// Inject hover style for clickable rows (once)
 function injectRowHoverStyle() {
   if (document.getElementById('userRowHoverStyle')) return;
   const style = document.createElement('style');
   style.id = 'userRowHoverStyle';
-  style.textContent = `
-    .user-row-clickable:hover td {
-      background: rgba(108,60,225,0.12) !important;
-    }
-    .user-row-clickable:hover td:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-    .user-row-clickable:hover td:last-child {
-      border-radius: 0 8px 8px 0;
-    }
-  `;
+  style.textContent = `.user-row-clickable:hover td { background: rgba(108,60,225,0.12) !important; }`;
   document.head.appendChild(style);
 }
 
-// ── Navigate to user profile ──────────────────────────────────────────────
 function goToUserProfile(userId) {
   window.location.href = `../HTML/admin_user_profile.html?id=${userId}`;
 }
@@ -182,7 +153,7 @@ function updateRole(userId, role) {
   fd.append('action', 'update_role');
   fd.append('user_id', userId);
   fd.append('role', role);
-  fetch('../scripts/users.php', { method: 'POST', body: fd })
+  fetch('../features/admin/users.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(d => { if (!d.success) alert(d.error); else loadStats(); })
     .catch(() => alert('Failed to update role.'));
@@ -193,25 +164,20 @@ function deleteUser(userId) {
   const fd = new FormData();
   fd.append('action', 'delete');
   fd.append('user_id', userId);
-  fetch('../scripts/users.php', { method: 'POST', body: fd })
+  fetch('../features/admin/users.php', { method: 'POST', body: fd })
     .then(r => r.json())
-    .then(d => {
-      if (d.success) { loadAdminUsers(); loadStats(); }
-      else alert(d.error);
-    });
+    .then(d => { if (d.success) { loadAdminUsers(); loadStats(); } else alert(d.error); });
 }
 
-// ── Order detail modal ────────────────────────────────────────────────────
 function viewOrderDetail(orderId, currentStatus) {
   currentOrderId = orderId;
   document.getElementById('orderDetailBody').innerHTML =
     '<div class="text-center py-3"><div class="spinner-border text-light"></div></div>';
   const sel = document.getElementById('statusSelect');
   if (sel) sel.value = currentStatus;
-
   new bootstrap.Modal(document.getElementById('orderDetailModal')).show();
 
-  fetch(`../scripts/orders.php?action=detail&order_id=${orderId}`)
+  fetch(`../features/orders/orders.php?action=detail&order_id=${orderId}`)
     .then(r => r.json())
     .then(items => {
       const body = document.getElementById('orderDetailBody');
@@ -239,7 +205,7 @@ function updateOrderStatus() {
   fd.append('action', 'update_status');
   fd.append('order_id', currentOrderId);
   fd.append('status', status);
-  fetch('../scripts/orders.php', { method: 'POST', body: fd })
+  fetch('../features/orders/orders.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(d => {
       if (d.success) {

@@ -1,18 +1,13 @@
 <?php
-// scripts/get_user_library.php — Return all games owned by the logged-in user
-require_once 'db_connect.php';
-require_once 'auth.php';
+// features/profile/get_user_library.php
+// Returns all games owned by the logged-in user (for library page)
+require_once '../shared/db.php';
+require_once '../shared/auth_helpers.php';
 
 auto_login_from_cookie($pdo);
 header('Content-Type: application/json');
 
-if (!is_logged_in()) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Not authenticated']);
-    exit;
-}
-
-$user_id = (int) $_SESSION['user_id'];
+if (!is_logged_in()) json_error('Not authenticated', 401);
 
 $stmt = $pdo->prepare("
     SELECT
@@ -30,13 +25,12 @@ $stmt = $pdo->prepare("
     WHERE ul.user_id = ?
     ORDER BY ul.purchase_date DESC
 ");
-$stmt->execute([$user_id]);
+$stmt->execute([$_SESSION['user_id']]);
 $rows = $stmt->fetchAll();
 
-// Resolve image paths (same logic as get_games.php)
 foreach ($rows as &$row) {
     $row['resolved_image'] = !empty($row['image_path'])
-        ? '../' . $row['image_path']
+        ? '../../' . $row['image_path']
         : $row['image_url'];
 }
 
