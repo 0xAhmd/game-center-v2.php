@@ -125,6 +125,7 @@
                 <span class="text-white-50" style="font-size:.85rem">${o.item_count} game${o.item_count != 1 ? 's' : ''}</span>
                 <span class="text-white fw-bold">$${parseFloat(o.total_price).toFixed(2)}</span>
                 <span class="order-status ${statusColors[o.status] || ''}">${o.status}</span>
+                <a href="invoice.html?order_id=${o.id}" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size:.72rem">🧾 Invoice</a>
               </div>
             </div>`;
         }).join('');
@@ -186,7 +187,10 @@
             <div class="profile-section">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="profile-section-title mb-0">📦 Recent Orders</h5>
-                <a href="orders.html" class="btn btn-sm btn-outline-light">View All</a>
+                <div class="d-flex gap-2">
+                  <a href="invoice.html" class="btn btn-sm btn-outline-light">🧾 Invoices</a>
+                  <a href="orders.html" class="btn btn-sm btn-outline-light">View All</a>
+                </div>
               </div>
               <div class="recent-orders-list">${recentOrdersHtml}</div>
             </div>` : `
@@ -195,6 +199,7 @@
               <div class="row g-3">
                 <div class="col-sm-6"><a href="admin.html" class="quick-action-card"><div class="qa-icon">📊</div><div class="qa-label">Dashboard</div></a></div>
                 <div class="col-sm-6"><a href="orders.html" class="quick-action-card"><div class="qa-icon">📦</div><div class="qa-label">All Orders</div></a></div>
+                <div class="col-sm-6"><a href="invoice.html" class="quick-action-card"><div class="qa-icon">🧾</div><div class="qa-label">Invoices</div></a></div>
                 <div class="col-sm-6"><a href="add.html" class="quick-action-card"><div class="qa-icon">➕</div><div class="qa-label">Add Game</div></a></div>
                 <div class="col-sm-6"><a href="index.html" class="quick-action-card"><div class="qa-icon">🎮</div><div class="qa-label">Store</div></a></div>
               </div>
