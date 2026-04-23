@@ -57,57 +57,114 @@ A full-stack game store web application built with PHP, MySQL, and vanilla JavaS
 ```
 game_center/
 ├── HTML/
-│   ├── index.html          # Store / game listing page
-│   ├── game.html           # Individual game detail page
-│   ├── cart.html           # Shopping cart
-│   ├── orders.html         # Order history (user & admin)
-│   ├── admin.html          # Admin dashboard
-│   ├── profile.html        # User profile
-│   ├── add.html            # Add new game (admin)
-│   ├── login.html          # Login page
-│   └── register.html       # Registration page
+│   ├── index.html                  # Store / game listing page
+│   ├── game.html                   # Individual game detail page
+│   ├── cart.html                   # Shopping cart
+│   ├── orders.html                 # Order history (user & admin)
+│   ├── admin.html                  # Admin dashboard
+│   ├── admin_user_profile.html     # Admin: view any user's profile
+│   ├── profile.html                # User profile
+│   ├── add.html                    # Add new game (admin)
+│   ├── login.html                  # Login page
+│   └── register.html               # Registration page
 │
 ├── JS/
-│   ├── auth_ui.js          # Navbar injection based on session state
-│   ├── fetch_games.js      # Fetches and renders game cards
-│   ├── scripts.js          # Search, modal logic, toast notifications
-│   ├── cart.js             # Cart page logic
-│   ├── orders.js           # Orders page logic
-│   └── admin.js            # Admin dashboard logic
+│   ├── auth_ui.js                  # Navbar injection based on session state
+│   ├── fetch_games.js              # Fetches and renders game cards
+│   ├── scripts.js                  # Search, modal logic, toast notifications
+│   ├── cart.js                     # Cart page logic
+│   ├── orders.js                   # Orders page logic
+│   ├── library.js                  # Library page logic
+│   └── admin.js                    # Admin dashboard logic
+│
+├── features/                       # ⭐ Feature-based backend (see below)
+│   ├── shared/
+│   │   ├── db.php                  # PDO + MySQLi database connection
+│   │   └── auth_helpers.php        # Session, auth guards, helper functions
+│   │
+│   ├── auth/
+│   │   ├── login.php               # Login handler
+│   │   ├── logout.php              # Logout + cookie clear
+│   │   ├── register.php            # Registration handler
+│   │   └── session_status.php      # Returns current session as JSON
+│   │
+│   ├── games/
+│   │   ├── get_games.php           # Returns all games as JSON (public)
+│   │   ├── add_game.php            # Add game with image upload (admin)
+│   │   ├── update_game.php         # Update game details (admin)
+│   │   └── delete_game.php         # Delete game by ID (admin)
+│   │
+│   ├── cart/
+│   │   ├── cart.php                # Cart CRUD API (get/count/add/update/remove/clear)
+│   │   └── get_cart_ids.php        # Returns game IDs in user's cart
+│   │
+│   ├── orders/
+│   │   └── orders.php              # Orders API (my_orders/all/detail/checkout/update_status)
+│   │
+│   ├── profile/
+│   │   ├── profile.php             # Profile view/update/change_password API
+│   │   ├── upload_avatar.php       # Avatar upload handler
+│   │   ├── get_library_ids.php     # Returns owned game IDs (for store badges)
+│   │   ├── get_user_library.php    # Returns full library for library page
+│   │   └── remove_from_library.php # Remove a game from library
+│   │
+│   └── admin/
+│       ├── users.php               # User management API (list/update_role/delete)
+│       └── user_profile.php        # Admin: fetch any user's profile data
 │
 ├── css/
-│   ├── styles.css          # Global styles, navbar, cards, buttons
-│   ├── store.css           # Cart, orders, admin panel styles
-│   ├── auth.css            # Login & register page styles
-│   ├── profile.css         # Profile page styles
-│   └── avatar-additions.css # Avatar/navbar additions
+│   ├── styles.css                  # Global styles, navbar, cards, buttons
+│   ├── store.css                   # Cart, orders, admin panel styles
+│   ├── auth.css                    # Login & register page styles
+│   ├── profile.css                 # Profile page styles
+│   └── avatar-additions.css        # Avatar/navbar additions
 │
-├── scripts/
-│   ├── db_connect.php      # PDO + MySQLi database connection
-│   ├── auth.php            # Auth helpers (login, admin guard, cookie)
-│   ├── session_status.php  # Returns current session as JSON
-│   ├── login.php           # Login handler
-│   ├── logout.php          # Logout + cookie clear
-│   ├── register.php        # Registration handler
-│   ├── get_games.php       # Returns all games as JSON
-│   ├── add_game.php        # Add game (with image upload)
-│   ├── update_game.php     # Update game details
-│   ├── delete_game.php     # Delete game by ID
-│   ├── cart.php            # Cart CRUD API
-│   ├── orders.php          # Orders + checkout API
-│   ├── profile.php         # Profile view/update/password API
-│   ├── upload_avatar.php   # Avatar upload handler
-│   └── users.php           # Admin user management API
-│
-├── uploads/                # Uploaded game images and avatars
+├── uploads/                        # Uploaded game images and avatars
 │   └── avatars/
 │
 ├── assets/
 │   ├── logo.png
 │   └── profile.png
 │
-└── game_center.sql         # Full database schema + seed data
+└── game_center.sql                 # Full database schema + seed data
 ```
+
+---
+
+## 🧩 Feature-Based Backend
+
+The backend is organized by **feature**, not by type. Each folder under `features/` is self-contained and owned by one teammate.
+
+| Folder | Responsibility | Who owns it |
+|--------|---------------|-------------|
+| `shared/` | DB connection & auth helpers — included by everyone | All |
+| `auth/` | Login, logout, register, session | Teammate A |
+| `games/` | Browse, add, edit, delete games | Teammate B |
+| `cart/` | Shopping cart CRUD | Teammate C |
+| `orders/` | Checkout & order history | Teammate D |
+| `profile/` | User profile, avatar, library | Teammate E |
+| `admin/` | User management & admin views | Teammate F |
+
+### How shared/ works
+
+Every PHP file in `features/` starts with the same two lines:
+
+```php
+require_once '../shared/db.php';         // gives you $pdo and $conn
+require_once '../shared/auth_helpers.php'; // gives you is_logged_in(), is_admin(), etc.
+```
+
+### Available helper functions (`auth_helpers.php`)
+
+| Function | What it does |
+|----------|-------------|
+| `auto_login_from_cookie($pdo)` | Restores session from "Remember Me" cookie |
+| `is_logged_in()` | Returns `true` if user has an active session |
+| `is_admin()` | Returns `true` if logged-in user is an admin |
+| `require_login()` | Redirects to login page if not authenticated |
+| `require_admin()` | Redirects to login page if not admin |
+| `json_ok($data)` | Outputs `{"success":true, ...}` and exits |
+| `json_error($msg, $code)` | Outputs `{"error":"..."}` with HTTP status and exits |
 
 ---
 
@@ -146,7 +203,7 @@ game_center/
    - Create a new database named `game_center`
    - Import `game_center.sql` via the **Import** tab
 
-3. **Configure the database connection** in `scripts/db_connect.php`:
+3. **Configure the database connection** in `features/shared/db.php`:
    ```php
    $host = "localhost";
    $user = "root";
@@ -168,7 +225,6 @@ game_center/
 | Role  | Email                     | Password   |
 |-------|---------------------------|------------|
 | Admin | admin@gamecenter.com      | `password` |
-| User  | ultramale200987@gmail.com | (hashed)   |
 
 > ⚠️ **Change default credentials before any public deployment.**
 
@@ -176,58 +232,70 @@ game_center/
 
 ## 📡 API Reference
 
-All backend endpoints return `application/json`.
+All backend endpoints live under `features/` and return `application/json`.
 
-### Auth & Session
+### Auth (`features/auth/`)
 
-| Endpoint                   | Method | Description                        |
-|----------------------------|--------|------------------------------------|
-| `scripts/session_status.php` | GET  | Returns current session state      |
-| `scripts/login.php`         | POST  | Authenticates user                 |
-| `scripts/logout.php`        | GET   | Destroys session and cookie        |
-| `scripts/register.php`      | POST  | Creates a new user account         |
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `session_status.php` | GET | Returns current session state |
+| `login.php` | POST | Authenticates user, sets session + optional cookie |
+| `logout.php` | GET | Destroys session and clears cookie |
+| `register.php` | POST | Creates a new user account |
 
-### Games
+### Games (`features/games/`)
 
-| Endpoint                    | Method | Auth    | Description              |
-|-----------------------------|--------|---------|--------------------------|
-| `scripts/get_games.php`     | GET    | Public  | Returns all games        |
-| `scripts/add_game.php`      | POST   | Admin   | Adds a new game          |
-| `scripts/update_game.php`   | POST   | Admin   | Updates a game           |
-| `scripts/delete_game.php`   | GET    | Admin   | Deletes a game by `?id=` |
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| `get_games.php` | GET | Public | Returns all games as JSON |
+| `add_game.php` | POST | Admin | Adds a new game (supports image upload) |
+| `update_game.php` | POST | Admin | Updates a game |
+| `delete_game.php` | GET | Admin | Deletes a game by `?id=` |
 
-### Cart
+### Cart (`features/cart/`)
 
-| Action    | Method | Description              |
-|-----------|--------|--------------------------|
-| `get`     | GET    | Fetch user's cart items  |
-| `count`   | GET    | Get total quantity count |
-| `add`     | POST   | Add item to cart         |
-| `update`  | POST   | Update item quantity     |
-| `remove`  | POST   | Remove single item       |
-| `clear`   | POST   | Clear entire cart        |
+| Endpoint | Action | Method | Description |
+|----------|--------|--------|-------------|
+| `cart.php` | `get` | GET | Fetch user's cart items |
+| `cart.php` | `count` | GET | Get total quantity count |
+| `cart.php` | `add` | POST | Add item to cart |
+| `cart.php` | `update` | POST | Update item quantity |
+| `cart.php` | `remove` | POST | Remove single item |
+| `cart.php` | `clear` | POST | Clear entire cart |
+| `get_cart_ids.php` | — | GET | Returns array of game IDs in cart |
 
-### Orders
+### Orders (`features/orders/`)
 
-| Action          | Method | Auth  | Description                    |
-|-----------------|--------|-------|--------------------------------|
-| `my_orders`     | GET    | User  | Fetch current user's orders    |
-| `all`           | GET    | Admin | Fetch all orders               |
-| `detail`        | GET    | Both  | Fetch items for a single order |
-| `checkout`      | POST   | User  | Place order from cart          |
-| `update_status` | POST   | Admin | Change an order's status       |
+| Endpoint | Action | Auth | Description |
+|----------|--------|------|-------------|
+| `orders.php` | `my_orders` | User | Fetch current user's orders |
+| `orders.php` | `all` | Admin | Fetch all orders |
+| `orders.php` | `detail` | Both | Fetch items for a single order |
+| `orders.php` | `checkout` | User | Place order from cart |
+| `orders.php` | `update_status` | Admin | Change an order's status |
 
-### Profile & Users
+> When an order is marked **completed**, games are automatically added to the user's library.
 
-| Endpoint                     | Action           | Description                    |
-|------------------------------|------------------|--------------------------------|
-| `scripts/profile.php`        | `get`            | Fetch profile, stats, orders   |
-| `scripts/profile.php`        | `update`         | Update username / email        |
-| `scripts/profile.php`        | `change_password`| Change password                |
-| `scripts/upload_avatar.php`  | POST             | Upload profile picture         |
-| `scripts/users.php`          | `list`           | List all users (admin)         |
-| `scripts/users.php`          | `update_role`    | Change a user's role (admin)   |
-| `scripts/users.php`          | `delete`         | Delete a user (admin)          |
+### Profile (`features/profile/`)
+
+| Endpoint | Action | Description |
+|----------|--------|-------------|
+| `profile.php` | `get` | Fetch profile, stats, recent orders |
+| `profile.php` | `update` | Update username / email |
+| `profile.php` | `change_password` | Change password |
+| `upload_avatar.php` | POST | Upload profile picture |
+| `get_library_ids.php` | GET | Returns owned game IDs |
+| `get_user_library.php` | GET | Returns full library list |
+| `remove_from_library.php` | POST | Remove a game from library |
+
+### Admin (`features/admin/`)
+
+| Endpoint | Action | Description |
+|----------|--------|-------------|
+| `users.php` | `list` | List all users |
+| `users.php` | `update_role` | Change a user's role |
+| `users.php` | `delete` | Delete a user |
+| `user_profile.php` | GET `?user_id=` | Fetch any user's profile data |
 
 ---
 
@@ -273,6 +341,12 @@ order_items
 ├── game_id (FK → games)
 ├── quantity
 └── price
+
+user_library
+├── id (PK)
+├── user_id (FK → users)
+├── game_id (FK → games)
+└── purchase_date
 ```
 
 ---
