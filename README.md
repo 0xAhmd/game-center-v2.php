@@ -226,8 +226,6 @@ require_once '../shared/auth_helpers.php'; // gives you is_logged_in(), is_admin
 |-------|---------------------------|------------|
 | Admin | admin@gamecenter.com      | `password` |
 
-> ⚠️ **Change default credentials before any public deployment.**
-
 ---
 
 ## 📡 API Reference
