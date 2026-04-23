@@ -15,13 +15,15 @@ $action  = $_GET['action'] ?? $_POST['action'] ?? '';
 // GET: current user's orders
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'my_orders') {
     $stmt = $pdo->prepare("
-        SELECT o.id, o.total_price, o.status, o.created_at,
-               COUNT(oi.id) AS item_count
-        FROM orders o
-        JOIN order_items oi ON o.id = oi.order_id
-        WHERE o.user_id = ?
-        GROUP BY o.id
-        ORDER BY o.created_at DESC
+SELECT o.id, o.total_price, o.status, o.created_at,
+       COUNT(oi.id) AS item_count,
+       GROUP_CONCAT(g.title ORDER BY g.title SEPARATOR ', ') AS game_titles
+FROM orders o
+JOIN order_items oi ON o.id = oi.order_id
+JOIN games g ON oi.game_id = g.id
+WHERE o.user_id = ?
+GROUP BY o.id
+ORDER BY o.created_at DESC
     ");
     $stmt->execute([$user_id]);
     echo json_encode($stmt->fetchAll());
@@ -52,14 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'detail') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'all') {
     if (!is_admin()) json_error('Forbidden', 403);
     $stmt = $pdo->query("
-        SELECT o.id, o.total_price, o.status, o.created_at,
-               u.username, u.email, u.avatar_path,
-               COUNT(oi.id) AS item_count
-        FROM orders o
-        JOIN users u ON o.user_id = u.id
-        JOIN order_items oi ON o.id = oi.order_id
-        GROUP BY o.id
-        ORDER BY o.created_at DESC
+SELECT o.id, o.total_price, o.status, o.created_at,
+       u.username, u.email, u.avatar_path,
+       COUNT(oi.id) AS item_count,
+       GROUP_CONCAT(g.title ORDER BY g.title SEPARATOR ', ') AS game_titles
+FROM orders o
+JOIN users u ON o.user_id = u.id
+JOIN order_items oi ON o.id = oi.order_id
+JOIN games g ON oi.game_id = g.id
+GROUP BY o.id
+ORDER BY o.created_at DESC
     ");
     echo json_encode($stmt->fetchAll());
     exit;

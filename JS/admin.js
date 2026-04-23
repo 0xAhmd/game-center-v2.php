@@ -77,7 +77,13 @@ function renderAdminOrders(orders) {
       <td class="text-white fw-bold">$${parseFloat(o.total_price).toFixed(2)}</td>
       <td><span class="order-status ${statusColors[o.status]||''}">${o.status}</span></td>
       <td><button class="btn btn-sm btn-outline-light" onclick="viewOrderDetail(${o.id},'${o.status}')">Details</button></td>
-    </tr>`;
+         <td class="text-white">
+        ${o.item_count}
+        ${o.game_titles ? `<div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:3px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escAttr(o.game_titles)}">${escHtml(o.game_titles)}</div>` : ''}
+      </td>
+   
+   
+      </tr>`;
   });
   html += '</tbody></table></div>';
   c.innerHTML = html;
