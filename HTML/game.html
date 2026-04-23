@@ -31,6 +31,26 @@
     .back-link:hover { color:#fff; }
     .login-prompt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;font-size:.875rem;color:rgba(255,255,255,.6); }
     .login-prompt a { color:#9b5de5;font-weight:600;text-decoration:none; }
+   
+   .rv-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:18px; }
+.rv-avg { font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:#ffc107; }
+.rv-form { background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:20px;margin-bottom:18px; }
+.rv-star { font-size:1.6rem;cursor:pointer;color:rgba(255,255,255,.2);transition:color .15s;line-height:1; }
+.rv-star.rv-star-filled { color:#ffc107; }
+.rv-star.rv-star-hover  { color:#ffe066; }
+.rv-star-row { display:flex;gap:4px; }
+.rv-list { display:flex;flex-direction:column;gap:12px; }
+.rv-item { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px; }
+.rv-item-header { display:flex;align-items:center;gap:12px;margin-bottom:8px; }
+.rv-avatar { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gc-purple),var(--gc-purple-2));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;font-family:'Rajdhani',sans-serif;overflow:hidden;flex-shrink:0;position:relative; }
+.rv-avatar-img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+.rv-avatar-initials { display:flex;align-items:center;justify-content:center;width:100%;height:100%; }
+.rv-username { font-weight:700;color:#fff;font-size:.88rem; }
+.rv-date { font-size:.72rem;color:rgba(255,255,255,.35); }
+.rv-stars { display:flex;gap:2px; }
+.rv-comment { color:rgba(255,255,255,.65);font-size:.875rem;line-height:1.6;margin:0; }
+   
+   
     #gameDetailSkeleton .skeleton-line { background:rgba(255,255,255,0.07);border-radius:8px;animation:shimmer 1.4s infinite; }
     @keyframes shimmer { 0%,100%{opacity:.5} 50%{opacity:1} }
   </style>
@@ -158,13 +178,23 @@
             <div class="game-detail-card">
               <h5 class="text-white fw-bold mb-3" style="font-family:'Rajdhani',sans-serif">📖 About This Game</h5>
               <p class="game-detail-desc">${escHtml(game.description || 'No description available.')}</p>
+          
+              </div>
+          
+          
             </div>
-          </div>
+          
           <div class="col-md-4">
             <div class="game-buy-card">${buySection}</div>
           </div>
         </div>`;
+// Insert after the row closing tag in renderGame():
+document.getElementById('gameDetailContainer').innerHTML += `
+  <div id="reviewsSection" class="mt-4">
+    <div class="text-center text-white-50 py-3">Loading reviews…</div>
+  </div>`;
 
+initReviews(game.id, session);
       document.title = `${game.title} — Game Center`;
     }
 
@@ -217,5 +247,7 @@
     function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function escAttr(s) { return String(s??'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   </script>
+<script src="../JS/reviews.js"></script>
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2026 at 08:45 PM
+-- Generation Time: Apr 23, 2026 at 09:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -133,7 +133,8 @@ INSERT INTO `orders` (`id`, `user_id`, `total_price`, `status`, `created_at`) VA
 (2, 3, 99999999.99, 'completed', '2026-04-19 17:58:45'),
 (3, 3, 99999999.99, 'completed', '2026-04-19 18:00:28'),
 (4, 3, 50.00, 'completed', '2026-04-19 18:05:04'),
-(5, 3, 0.00, 'completed', '2026-04-19 18:37:21');
+(5, 3, 0.00, 'completed', '2026-04-19 18:37:21'),
+(6, 3, 60.00, 'completed', '2026-04-20 22:22:55');
 
 -- --------------------------------------------------------
 
@@ -161,7 +162,30 @@ INSERT INTO `order_items` (`id`, `order_id`, `game_id`, `quantity`, `price`) VAL
 (5, 3, 65, 1, 50.00),
 (6, 3, 59, 1, 60.00),
 (7, 4, 70, 1, 50.00),
-(8, 5, 39, 1, 0.00);
+(8, 5, 39, 1, 0.00),
+(9, 6, 46, 1, 60.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL CHECK (`rating` between 1 and 5),
+  `comment` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `user_id`, `game_id`, `rating`, `comment`, `created_at`) VALUES
+(1, 3, 81, 5, 'Good one', '2026-04-23 19:56:33');
 
 -- --------------------------------------------------------
 
@@ -215,7 +239,8 @@ INSERT INTO `user_library` (`id`, `user_id`, `game_id`, `purchase_date`) VALUES
 (6, 3, 65, '2026-04-19 18:00:47'),
 (7, 3, 59, '2026-04-19 18:00:47'),
 (8, 3, 70, '2026-04-19 18:05:27'),
-(9, 3, 39, '2026-04-19 18:37:34');
+(9, 3, 39, '2026-04-19 18:37:34'),
+(10, 3, 46, '2026-04-20 22:23:14');
 
 --
 -- Indexes for dumped tables
@@ -251,6 +276,14 @@ ALTER TABLE `order_items`
   ADD KEY `game_id` (`game_id`);
 
 --
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_game` (`user_id`,`game_id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -275,7 +308,7 @@ ALTER TABLE `user_library`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `games`
@@ -287,13 +320,19 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -305,7 +344,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_library`
 --
 ALTER TABLE `user_library`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -330,6 +369,13 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_library`
