@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Invoice — Game Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/store.css">
+  <link rel="icon" type="image/png" href="../assets/profile.png">
+  <style>
+    .invoice-wrap {
+      max-width: 680px;
+      margin: 48px auto;
+      padding: 0 16px 60px;
+    }
+
+    /* ── Thank-you banner ── */
+    .invoice-banner {
+      text-align: center;
+      padding: 40px 24px 32px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .invoice-banner-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 24px rgba(40,168,101,.6));
+    }
+    .invoice-banner h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 6px;
+    }
+    .invoice-banner p {
+      color: rgba(255,255,255,.5);
+      font-size: .9rem;
+      margin: 0;
+    }
+
+    /* ── Invoice card ── */
+    .invoice-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .invoice-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .invoice-card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.8);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* ── Meta row (ID / Status / Date) ── */
+    .invoice-meta {
+      display: flex;
+      gap: 24px;
+      padding: 20px 24px;
+      flex-wrap: wrap;
+    }
+    .invoice-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .invoice-meta-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: rgba(255,255,255,.35);
+      font-weight: 600;
+    }
+    .invoice-meta-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ── Line items ── */
+    .invoice-items {
+      padding: 0 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .invoice-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .invoice-item-img {
+      width: 64px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,.07);
+    }
+    .invoice-item-info { flex: 1; min-width: 0; }
+    .invoice-item-title {
+      color: #fff;
+      font-weight: 600;
+      font-size: .92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .invoice-item-qty {
+      font-size: .78rem;
+      color: rgba(255,255,255,.4);
+      margin-top: 2px;
+    }
+    .invoice-item-price {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* ── Total row ── */
+    .invoice-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .invoice-total-label {
+      font-size: .85rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.6);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .invoice-total-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--gc-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Actions ── */
+    .invoice-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Loading / error states ── */
+    .invoice-loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,.5);
+    }
+    .invoice-error {
+      background: rgba(231,76,60,.1);
+      border: 1px solid rgba(231,76,60,.25);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      color: #ff9d9d;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="gc-navbar">
+    <div class="gc-nav-brand">
+      <a href="index.html" style="text-decoration:none;color:inherit">
+        <img src="../assets/logo.png" alt="Logo" width="40" onerror="this.style.display='none'">
+        <span>Game Center</span>
+      </a>
+    </div>
+    <div class="gc-nav-actions" id="navActions"></div>
+  </nav>
+
+  <div class="invoice-wrap" id="invoiceWrap">
+    <div class="invoice-loading">
+      <div class="spinner-border text-light mb-3"></div>
+      <p>Loading invoice…</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../JS/auth_ui.js"></script>
+  <script src="../JS/invoice.js"></script>
+</body>
+</html>
