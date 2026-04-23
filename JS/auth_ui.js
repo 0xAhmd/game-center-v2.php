@@ -13,23 +13,23 @@
 
     window.__session = s;
 
-    function navAvatar(username, avatarPath) {
-      const initials = escHtml(username.slice(0, 2).toUpperCase());
-      if (avatarPath) {
-        return `
-          <div class="gc-nav-avatar-wrap">
-            <img src="../${escAttr(avatarPath)}?v=${Date.now()}"
-                 alt="${escHtml(username)}"
-                 class="gc-nav-avatar"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="gc-nav-avatar-initials" style="display:none">${initials}</div>
-          </div>`;
-      }
-      return `
-        <div class="gc-nav-avatar-wrap">
-          <div class="gc-nav-avatar-initials">${initials}</div>
-        </div>`;
-    }
+   function navAvatar(username, avatarPath) {
+  if (avatarPath) {
+    return `
+      <div class="gc-nav-avatar-wrap">
+        <img src="../${escAttr(avatarPath)}?v=${Date.now()}"
+             alt="${escHtml(username)}"
+             class="gc-nav-avatar">
+      </div>`;
+  }
+
+  // fallback ONLY if no image
+  const initials = escHtml(username.slice(0, 2).toUpperCase());
+  return `
+    <div class="gc-nav-avatar-wrap">
+      <div class="gc-nav-avatar-initials">${initials}</div>
+    </div>`;
+}
 
     if (!s.logged_in) {
       nav.innerHTML = `
