@@ -26,6 +26,10 @@ function loadStats() {
     const revenue = Array.isArray(orders)
       ? orders.reduce((sum, o) => sum + parseFloat(o.total_price || 0), 0) : 0;
     document.getElementById('statRevenue').textContent = '$' + revenue.toFixed(2);
+
+    // ✅ Render chart using the same orders data — no extra API call
+    if (Array.isArray(orders)) renderRevenueChart(orders);
+
   }).catch(err => console.error('Stats error:', err));
 }
 
@@ -214,6 +218,73 @@ function updateOrderStatus() {
         loadStats();
       }
     });
+}
+
+function renderRevenueChart(orders) {
+  // Build a map: "YYYY-MM" → total revenue
+  const revenueMap = {};
+  orders.forEach(o => {
+    const d = new Date(o.created_at);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    revenueMap[key] = (revenueMap[key] || 0) + parseFloat(o.total_price || 0);
+  });
+
+  // Sort keys chronologically and take last 12 months max
+  const sortedKeys = Object.keys(revenueMap).sort().slice(-12);
+  const labels = sortedKeys.map(k => {
+    const [year, month] = k.split('-');
+    return new Date(year, month - 1).toLocaleString('en-US', { month: 'short', year: 'numeric' });
+  });
+  const values = sortedKeys.map(k => parseFloat(revenueMap[k].toFixed(2)));
+
+  const ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
+
+  // Destroy previous instance if re-rendering
+  if (window._revenueChartInstance) {
+    window._revenueChartInstance.destroy();
+  }
+
+  window._revenueChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Revenue ($)',
+        data: values,
+        backgroundColor: 'rgba(108, 60, 225, 0.55)',
+        borderColor: 'rgba(155, 93, 229, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.y.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: 'rgba(255,255,255,0.55)', font: { size: 12 } },
+          grid:  { color: 'rgba(255,255,255,0.06)' }
+        },
+        y: {
+          ticks: {
+            color: 'rgba(255,255,255,0.55)',
+            font: { size: 12 },
+            callback: v => '$' + v.toLocaleString()
+          },
+          grid: { color: 'rgba(255,255,255,0.06)' }
+        }
+      }
+    }
+  });
 }
 
 function escHtml(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

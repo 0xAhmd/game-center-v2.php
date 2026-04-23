@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/store.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <link rel="icon" type="image/png" href="../assets/profile.png">
 </head>
 <body>
@@ -33,6 +34,9 @@
           <div class="stat-label">Total Games</div>
         </div>
       </div>
+
+
+
       <div class="col-md-3">
         <div class="stat-card">
           <div class="stat-icon">👤</div>
@@ -55,6 +59,12 @@
         </div>
       </div>
     </div>
+
+    <!-- Revenue Chart -->
+<div class="gc-form mb-5" style="padding: 28px;">
+  <h5 class="text-white fw-bold mb-4">📈 Monthly Revenue</h5>
+  <canvas id="revenueChart" height="100"></canvas>
+</div>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs gc-tabs mb-4" id="adminTabs">
