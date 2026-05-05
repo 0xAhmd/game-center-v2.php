@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2026 at 09:57 PM
+-- Generation Time: May 05, 2026 at 04:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -106,8 +106,8 @@ INSERT INTO `games` (`id`, `title`, `genre`, `price`, `image_url`, `image_path`,
 (77, 'Battlefield 2042', 'First-Person Shooter', 60.00, 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1517290/header.jpg?t=1744718390', NULL, 'Battlefield 2042 is a next-generation first-person shooter featuring large-scale multiplayer battles, advanced vehicles, and dynamic environments set in a futuristic world of warfare.', '2026-04-14 22:21:49'),
 (78, 'Microsoft Flight Simulator', 'Simulation', 60.00, 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1250410/header.jpg?t=1740686114', NULL, 'Microsoft Flight Simulator offers the most realistic flight simulation experience ever created, featuring a vast open world with real-time weather conditions and accurate aircraft models.', '2026-04-14 22:21:49'),
 (79, 'Among Us', 'Party Game', 5.00, 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/945360/header.jpg?t=1731953093', NULL, 'Among Us is an online multiplayer party game where players work together to complete tasks on a spaceship while trying to unmask the Impostor who is sabotaging them. With its fun and suspenseful gameplay, Among Us has become a social gaming phenomenon.', '2026-04-14 22:21:49'),
-(80, 'Culling Game', 'Action', 99999999.99, 'https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/10/culling-game-strongest-characters.jpg', NULL, 'The Culling Game is the most unprecedented act of jujutsu terrorism ever enacted. Orchestrated by Kenjaku with the goal of evolving humanity through cursed energy, it functions as a lethal battle royale where players kill one another with jujutsu across ten barrier colonies down Japan.', '2026-04-14 22:21:49'),
-(81, 'Greed Island', 'Adventure', 99999999.99, 'https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1400/https://inkarnate-api-as-production.s3.amazonaws.com/4AG5cnXa9YBCCq6EeVEBNA', NULL, 'Greed Island is a dangerous video game meant only for Hunters. Played on the JoyStation Console, it is out of print and sells at auctions for at least 8 billion. The game transports players bodies into the game world, only releasing them when they die, win, or leave. It can only be played by Nen users.', '2026-04-14 22:21:49'),
+(80, 'Culling Game', 'Action', 999.00, 'https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/10/culling-game-strongest-characters.jpg', NULL, 'The Culling Game is the most unprecedented act of jujutsu terrorism ever enacted. Orchestrated by Kenjaku with the goal …', '2026-04-14 22:21:49'),
+(81, 'Greed Island', 'Adventure', 9999.00, 'https://cdn2.inkarnate.com/cdn-cgi/image/width=1800,height=1400/https://inkarnate-api-as-production.s3.amazonaws.com/4AG5cnXa9YBCCq6EeVEBNA', NULL, 'Greed Island is a dangerous video game meant only for Hunters. Played on the JoyStation Console, it is out of print and …', '2026-04-14 22:21:49'),
 (82, 'Hollow Knight: Silksong', 'Souls', 300.00, 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg?t=1776125736', NULL, 'As the lethal hunter Hornet, adventure through a kingdom ruled by silk and song! Captured and taken to this unfamiliar world, prepare to battle mighty foes and solve ancient mysteries as you ascend on a deadly pilgrimage to the kingdom’s peak.\r\n\r\nHollow Knight: Silksong is the epic sequel to Hollow Knight, the award winning action-adventure. Journey to all-new lands, discover new powers, battle vast hordes of bugs and beasts and uncover secrets tied to your nature and your past.', '2026-04-19 18:44:18');
 
 -- --------------------------------------------------------
@@ -134,7 +134,11 @@ INSERT INTO `orders` (`id`, `user_id`, `total_price`, `status`, `created_at`) VA
 (3, 3, 99999999.99, 'completed', '2026-04-19 18:00:28'),
 (4, 3, 50.00, 'completed', '2026-04-19 18:05:04'),
 (5, 3, 0.00, 'completed', '2026-04-19 18:37:21'),
-(6, 3, 60.00, 'completed', '2026-04-20 22:22:55');
+(6, 3, 60.00, 'completed', '2026-04-20 22:22:55'),
+(7, 5, 60.00, 'completed', '2026-04-23 20:04:46'),
+(8, 3, 40.00, 'completed', '2026-04-23 20:47:52'),
+(9, 3, 40.00, 'completed', '2026-05-03 14:08:36'),
+(10, 3, 300.00, 'completed', '2026-05-03 14:24:33');
 
 -- --------------------------------------------------------
 
@@ -163,7 +167,11 @@ INSERT INTO `order_items` (`id`, `order_id`, `game_id`, `quantity`, `price`) VAL
 (6, 3, 59, 1, 60.00),
 (7, 4, 70, 1, 50.00),
 (8, 5, 39, 1, 0.00),
-(9, 6, 46, 1, 60.00);
+(9, 6, 46, 1, 60.00),
+(10, 7, 56, 1, 60.00),
+(11, 8, 68, 1, 40.00),
+(12, 9, 64, 1, 40.00),
+(13, 10, 82, 1, 300.00);
 
 -- --------------------------------------------------------
 
@@ -185,7 +193,10 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`id`, `user_id`, `game_id`, `rating`, `comment`, `created_at`) VALUES
-(1, 3, 81, 5, 'Good one', '2026-04-23 19:56:33');
+(1, 3, 81, 5, 'Good one', '2026-04-23 19:56:33'),
+(2, 5, 56, 5, 'Good', '2026-04-23 20:05:44'),
+(3, 3, 65, 4, 'xxx', '2026-05-03 14:20:31'),
+(4, 3, 82, 5, 'sss', '2026-05-03 14:28:36');
 
 -- --------------------------------------------------------
 
@@ -212,7 +223,7 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `avatar_path
 (2, 'George Wassouf', 'georgew@gmail.com', '$2y$10$eeI9iNF8pd/WwCJh0lV5Ou3hkQSUKP46KXZdFpl/yNpT0sChdXmSa', 'admin', 'uploads/avatars/avatar_2_69e50f49967a7.jpg', '2026-04-14 22:09:49'),
 (3, 'Ultra Male', 'ultramale200987@gmail.com', '$2y$10$JgiRFAiHkIZJTbZsImHJZegF4pPAIgatCum677tsxHEZdUHEI5oPC', 'user', 'uploads/avatars/avatar_3_69e50fb4d188c.jpg', '2026-04-14 22:23:02'),
 (4, 'User1', 'user@gmail.com', '$2y$10$GBJNoTHR9C0yptSJIKhFH.yAvN3FZFAnirGxQd8LLvkZPy8N17SFG', 'user', NULL, '2026-04-19 16:55:27'),
-(5, 'Mohany165', 'Mohany165@gmail.com', '$2y$10$7Ywg7RkZE6nm1I4hXjoVy.KcuRl0U3qZySOV245roTYjsjZffzSgK', 'user', NULL, '2026-04-19 17:05:37'),
+(5, 'Mohany165', 'Mohany165@gmail.com', '$2y$10$7Ywg7RkZE6nm1I4hXjoVy.KcuRl0U3qZySOV245roTYjsjZffzSgK', 'user', 'uploads/avatars/avatar_5_69ea7b3dc7045.png', '2026-04-19 17:05:37'),
 (6, 'Admin1', 'admin@gmail.com', '$2y$10$.4hXOhF69Vo/mR57VNPHcuwWSofJ2f9.1tcdaylL4EDrJWAIG7vzy', 'user', NULL, '2026-04-19 17:11:58');
 
 -- --------------------------------------------------------
@@ -240,7 +251,11 @@ INSERT INTO `user_library` (`id`, `user_id`, `game_id`, `purchase_date`) VALUES
 (7, 3, 59, '2026-04-19 18:00:47'),
 (8, 3, 70, '2026-04-19 18:05:27'),
 (9, 3, 39, '2026-04-19 18:37:34'),
-(10, 3, 46, '2026-04-20 22:23:14');
+(10, 3, 46, '2026-04-20 22:23:14'),
+(11, 5, 56, '2026-04-23 20:05:03'),
+(12, 3, 68, '2026-04-23 20:49:04'),
+(13, 3, 64, '2026-05-03 14:10:58'),
+(14, 3, 82, '2026-05-03 14:26:48');
 
 --
 -- Indexes for dumped tables
@@ -308,7 +323,7 @@ ALTER TABLE `user_library`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `games`
@@ -320,19 +335,19 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -344,7 +359,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_library`
 --
 ALTER TABLE `user_library`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
