@@ -1,5 +1,4 @@
 <?php
-// features/auth/logout.php
 require_once '../shared/auth_helpers.php';
 
 $_SESSION = [];

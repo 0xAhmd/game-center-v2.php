@@ -1,5 +1,4 @@
 <?php
-// features/auth/register.php
 require_once '../shared/db.php';
 require_once '../shared/auth_helpers.php';
 

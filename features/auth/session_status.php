@@ -1,5 +1,4 @@
 <?php
-// features/auth/session_status.php
 // Returns the current login state as JSON — called by auth_ui.js on every page
 require_once '../shared/db.php';
 require_once '../shared/auth_helpers.php';
